@@ -51,7 +51,9 @@ public class StartBaukasten extends PApplet{
     wG.fuegeEin(w4);
     wG.fuegeEin(w5);  
     
-    slider = new Slider(this, 100, 60, 200, 3);
+    slider = new Slider(this, 100, 60, 300);
+    slider.setColor(color(255, 100, 100));
+    slider.setMaxValue(255);
     
     baukasten.fuegeEin(slider);
     baukasten.fuegeEin(wG);
@@ -76,6 +78,7 @@ public class StartBaukasten extends PApplet{
     } else {
       stift.setzeFarbe(color(0, 0, 0));
     }
+    buntstift.setzeFarbe(color(slider.getValue(), 255 - slider.getValue(), 0));
     
     stift.bewegeBis(mouseX, mouseY);
     buntstift.bewegeBis(mouseX, mouseY);
