@@ -111,7 +111,7 @@ public class Slider extends GUIObjekt implements PConstants {
   
   
   public void keyEvent(KeyEvent e) {
-    
+     //nothing yet
   }
   
   private int getXFromValue(int v) {
