@@ -163,6 +163,10 @@ public class Wahlbox extends GUIObjekt implements PConstants {
     pressed = false;
   }
   
+  public void setFunction(Callable f) {
+    f.call();
+  }
+  
   public boolean istGewaehlt() {
     return checked;
   }
