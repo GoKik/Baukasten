@@ -8,7 +8,7 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class Slider extends GUIObjekt implements PConstatns {
+public class Slider extends GUIObjekt implements PConstants {
   
   private int breite, hoehe, minValue, maxValue, step;
   
@@ -22,14 +22,14 @@ public class Slider extends GUIObjekt implements PConstatns {
   }
   
   public void draw() {
-    
+    parent.rect(xPos, yPos, breite, hoehe);  
   }
   
   public void mouseEvent(MouseEvent e) {
     
   }
   
-  public void keyEvent(keyEvent e) {
+  public void keyEvent(KeyEvent e) {
     
   }
   

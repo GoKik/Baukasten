@@ -12,7 +12,7 @@ public class StartBaukasten extends PApplet{
   Knopf kLoesche;
   Wahlbox w1, w2, w3, w4, w5;
   WahlboxGruppe wG;
-  
+  Slider slider;
   
   public void setup() {
     
@@ -49,7 +49,11 @@ public class StartBaukasten extends PApplet{
     wG.fuegeEin(w2);      
     wG.fuegeEin(w3);
     wG.fuegeEin(w4);
-    wG.fuegeEin(w5);
+    wG.fuegeEin(w5);  
+    
+    slider = new Slider(this, 100, 60, 200, 3);
+    
+    baukasten.fuegeEin(slider);
     baukasten.fuegeEin(wG);
     baukasten.fuegeEin(stift);
     baukasten.fuegeEin(buntstift);
