@@ -13,14 +13,15 @@ public class StartBaukasten extends PApplet{
   Wahlbox w1, w2, w3, w4, w5;
   WahlboxGruppe wG;
   Slider slider;
+  Textbox tBox;
   
   public void setup() {
     
     baukasten = new Baukasten(this, Baukasten.JAVA_MODE);
     stift = new Stift(this);
-    stift.setzeBereich(0, 100, width, height / 2);
+    stift.setzeBereich(0, height/2, width/2, height);
     buntstift = new Stift(this);
-    buntstift.setzeBereich(0, height/2, width, height);
+    buntstift.setzeBereich(width/2, height/2, width, height);
     buntstift.setzeFarbe(color(255, 100, 100));
     kLoesche = new Knopf(this, "Lösche", 10, 10, 80, 80);
     kLoesche.setzeFarbe(color(255, 100, 100));
@@ -40,21 +41,19 @@ public class StartBaukasten extends PApplet{
     w4 = new Wahlbox(this, "Test", 250, 10, true);
     w4.setzeStil(Wahlbox.CHECKBOX_ROUND);
     w4.setzeFarbe(color(255, 100, 100));
-    
-    w5 = new Wahlbox(this, "Test", 300, 10, true);
-    w5.setzeStil(Wahlbox.CHECKBOX_ROUND);
-    w5.setzeFarbe(color(255, 100, 100));
     wG = new WahlboxGruppe(this);
     wG.fuegeEin(w1);
     wG.fuegeEin(w2);      
     wG.fuegeEin(w3);
     wG.fuegeEin(w4);
-    wG.fuegeEin(w5);  
     
     slider = new Slider(this, 100, 60, 300);
     slider.setColor(color(255, 100, 100));
     slider.setMaxValue(255);
     
+    tBox = new Textbox(this, 20, 150, 100, 40);
+    
+    baukasten.fuegeEin(tBox);
     baukasten.fuegeEin(slider);
     baukasten.fuegeEin(wG);
     baukasten.fuegeEin(stift);

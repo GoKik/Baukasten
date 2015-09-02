@@ -81,7 +81,9 @@ public class Baukasten implements PConstants {
   }  
   
   public void keyEvent(KeyEvent e) {
-    
+    for (int i = 0; i < objects.size(); i++) {
+      objects.get(i).keyEvent(e);
+    }
   }
   
   public void pause() {
