@@ -1,4 +1,4 @@
-//package sgs.toolbox;
+package toolbox;
 
 import processing.core.*;     
 import processing.data.*; 
@@ -129,7 +129,7 @@ public class StartToolbox extends PApplet{
     //orientation(LANDSCAPE);
   }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "StartToolbox" };
+    String[] appletArgs = new String[] { "toolbox.StartToolbox" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {
