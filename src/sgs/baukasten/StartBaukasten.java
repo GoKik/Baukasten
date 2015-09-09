@@ -51,7 +51,7 @@ public class StartBaukasten extends PApplet{
     slider.setColor(color(255, 100, 100));
     slider.setMaxValue(255);
     
-    tBox = new Textbox(this, 100, 150, 80, 30);
+    tBox = new Textbox(this, 50, 150, 400, 30);
     
     baukasten.fuegeEin(tBox);
     baukasten.fuegeEin(slider);

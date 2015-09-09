@@ -12,7 +12,7 @@ public class Textbox extends GUIObjekt implements PConstants {
   
   private int breite, hoehe, col, bgCol, hlCol;
   private String content = "";
-  private boolean hovered, pressed, focused, enterPressed;
+  private boolean hovered, pressed, focused;
   private int cursor = 0, startPos = 0;
   
   public Textbox(PApplet p, int x, int y, int b, int h) {
@@ -53,7 +53,6 @@ public class Textbox extends GUIObjekt implements PConstants {
     if (focused && e.getAction() == KeyEvent.TYPE) {
       if (e.getKey() == ENTER) {
         focused = false;
-        enterPressed = true;
       } else if (e.getKey() == BACKSPACE) { 
         if (cursor > 0) {
           if (cursor < content.length()) {
@@ -128,15 +127,6 @@ public class Textbox extends GUIObjekt implements PConstants {
       cursor = startPos + ind;
     } else {
       focused = false;
-    } // end of if-else
-  }
-  
-  public boolean wasEnterPressed() {
-    if (enterPressed) {
-      enterPressed = false;
-      return true;
-    } else {
-      return false;
     } // end of if-else
   }
   
