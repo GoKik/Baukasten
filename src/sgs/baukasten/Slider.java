@@ -38,10 +38,16 @@ public class Slider extends GUIObjekt implements PConstants {
   
   public void setMaxValue(int m) {
     maxValue = m;
+    if (value > maxValue) {
+      value = maxValue;
+    } // end of if
   }
   
   public void setMinValue(int m) {
     minValue = m;
+    if (value < minValue) {
+      value = minValue;
+    } // end of if
   }
   
   public void draw() {

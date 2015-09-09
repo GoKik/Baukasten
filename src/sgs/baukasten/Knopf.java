@@ -24,6 +24,10 @@ public class Knopf extends GUIObjekt implements PConstants{
     breite = b;
     hoehe = h;
     textGroesse = 15;
+    while (parent.textWidth(n) > b - 10) { 
+      textGroesse--;
+      parent.textSize(textGroesse);
+    } // end of while
     col = p.color(0, 0, 0);
     bgCol = p.color(255, 255, 255);
     disCol = p.color(30, 30, 30, 150);
@@ -36,10 +40,7 @@ public class Knopf extends GUIObjekt implements PConstants{
   public void setzeHintergrundFarbe(int c) {
     bgCol = c;
   }
-  
-  public void setzeTextGroesse(int t) {
-    textGroesse = t;
-  }
+
   
   public void setzeStil(int i) {
     if (i == RECT || i == ROUND) {
@@ -49,7 +50,6 @@ public class Knopf extends GUIObjekt implements PConstants{
   }
   
   public void draw() {
-    parent.textSize(textGroesse);
     parent.textAlign(CENTER, CENTER);
     parent.strokeWeight(2);
     

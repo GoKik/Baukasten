@@ -11,33 +11,76 @@ import java.util.ArrayList;
 
 public class TabContainer extends GUIObjekt implements PConstants {
   
-  private HashMap<String, Tab> tabs;
+  private ArrayList<Tab> tabs;
+  private ArrayList<String> tabNames;
   private int selectedTab = 0;
+  private int breite, hoehe, col, bgCol;
+  private int hovered = -1, clicked = -1;
   
-  public TabContainer(PApplet p) {
-    super(p, 0, 0);
-    tabs = new HashMap<String, Tab>();
+  public TabContainer(PApplet p, int x, int y, int b, int h) {
+    super(p, x, y);
+    tabs = new ArrayList<Tab>();
+    tabNames = new ArrayList<String>();
+    breite = b;
+    hoehe = h;
+  }
+  
+  public void setColor(int c) {
+    col = c;
+  }
+  
+  public void setBackgroundColor(int c) {
+    bgCol = c;
   }
   
   public void newTab(String n) {
-    tabs.put(n, new Tab(parent, n));
+    tabs.add(new Tab(parent, n));
+    tabNames.add(n);
   }
   
   public void removeTab(String n) {
-    tabs.remove(n);
+    int i = tabNames.indexOf(n);
+    tabs.remove(i);
+    tabNames.remove(i);
+  }
+  
+  public int getSelectedTab() {
+    return selectedTab;
   }
   
   public void addObject(String n, GUIObjekt o) {
-    tabs.get(n).addObject(o);
+    int i = tabNames.indexOf(n);
+    tabs.get(i).addObject(o);
   }
   
   public void draw() {
+    parent.noStroke();  
+    parent.fill(bgCol);
+    parent.rect(xPos, yPos, breite, 40);
+    parent.fill(col);
+    parent.textAlign(CENTER, CENTER);
+    
+    for (int i = 0; i < tabs.size() ; i++ ) {
+      if (i == hovered && i != selectedTab) {
+        parent.textSize(11);
+      } else {
+        parent.textSize(12);
+      } // end of if-else
+      parent.text(tabNames.get(i), xPos + (i * 70), yPos, 70, 40); 
+    } // end of for
+    parent.rect(xPos + (selectedTab * 70), yPos + 38, 70, 2);
+    
     if (selectedTab < tabs.size()) {    
       tabs.get(selectedTab).draw();
     } // end of if
   }
   
   public void mouseEvent(MouseEvent e) {
+    if (e.getAction() == MouseEvent.MOVE) {
+      mouseOver(e.getX(), e.getY());
+    } else if (e.getAction() == MouseEvent.RELEASE) {
+      clicked(e.getX(), e.getY());
+    }
     if (selectedTab < tabs.size()) {  
       tabs.get(selectedTab).mouseEvent(e);
     }
@@ -48,41 +91,58 @@ public class TabContainer extends GUIObjekt implements PConstants {
       tabs.get(selectedTab).keyEvent(e);
     }
   }
+  
+  private void clicked(int x, int y) {
+    mouseOver(x, y);
+    if (hovered > -1) {
+      selectedTab = hovered;
+    } // end of if
+  }
+  
+  private void mouseOver(int x, int y) {
+    for (int i = 0; i < tabs.size() ; i++ ) {
+      if (x > xPos + (i * 70) && x < xPos + (i * 70) + 70 && y > yPos && y < yPos + 40) {
+        hovered = i;
+        return;
+      } // end of if
+    } // end of for
+    hovered = -1;
+  }
+  
+  private class Tab extends GUIObjekt implements PConstants {
     
-    private class Tab extends GUIObjekt implements PConstants {
-      
-      private String name;
-      private ArrayList<GUIObjekt> objects;
-      
-      public Tab(PApplet p, String n) {
-        super(p, 0, 0);
-        name = n;
-        objects = new ArrayList<GUIObjekt>();
-      }
-      
-      public void addObject(GUIObjekt o) {
-        objects.add(o);
-      }
-      
-      public void draw() {
-        for (int i = 0; i < objects.size() ; i++ ) {
-          objects.get(i).draw();
-        } // end of for
-      }
-      
-      public void keyEvent(KeyEvent e) {
-        for (int i = 0; i < objects.size() ; i++ ) {
-          objects.get(i).keyEvent(e);
-        } // end of for
-      } 
-      
-      public void mouseEvent(MouseEvent e) {
-        for (int i = 0; i < objects.size() ; i++ ) {
-          objects.get(i).mouseEvent(e);
-        } // end of for
-      }
+    private String name;
+    private ArrayList<GUIObjekt> objects;
+    
+    public Tab(PApplet p, String n) {
+      super(p, 0, 0);
+      name = n;
+      objects = new ArrayList<GUIObjekt>();
     }
     
+    public void addObject(GUIObjekt o) {
+      objects.add(o);
+    }
     
+    public void draw() {
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).draw();
+      } // end of for
+    }
     
+    public void keyEvent(KeyEvent e) {
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).keyEvent(e);
+      } // end of for
+    } 
+    
+    public void mouseEvent(MouseEvent e) {
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).mouseEvent(e);
+      } // end of for
+    }
   }
+  
+  
+  
+}

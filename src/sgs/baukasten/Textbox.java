@@ -118,6 +118,7 @@ public class Textbox extends GUIObjekt implements PConstants {
       int dX = x - 5 - xPos;
       int minD = 100;
       int ind = 0;
+      parent.textSize(20);
       for (int i = 0; i <= content.substring(startPos).length() ;i++ ) {
         int d = (int)parent.abs(parent.textWidth(content.substring(startPos, startPos + i)) - dX);
         if (d < minD) {

@@ -96,7 +96,7 @@ public class Wahlbox extends GUIObjekt implements PConstants {
   
   private void drawBody(int x, int y, int b, int h) {
     if (stil == CHECKBOX) { 
-      parent.textAlign(CENTER, CENTER);
+      parent.textAlign(LEFT, CENTER);
       parent.rect(x, y, b, h);
       parent.fill(col);
       parent.text(name, xPos + 35, yPos + (hoehe / 2));
