@@ -1,4 +1,4 @@
-import toolbox;
+import toolbox.*;
 
   Toolbox toolbox;
   Pencil pencil;
