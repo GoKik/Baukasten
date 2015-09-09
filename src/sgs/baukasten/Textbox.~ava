@@ -8,17 +8,17 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class Textbox extends GUIObjekt implements PConstants {
+public class Textbox extends GUIObject implements PConstants {
   
-  private int breite, hoehe, col, bgCol, hlCol;
+  private int width, height, col, bgCol, hlCol;
   private String content = "";
-  private boolean hovered, pressed, focused;
+  private boolean hovered, pressed, focused, enterPressed;
   private int cursor = 0, startPos = 0;
   
   public Textbox(PApplet p, int x, int y, int b, int h) {
     super(p, x, y);
-    breite = b;
-    hoehe = h;
+    width = b;
+    height = h;
     col = parent.color(0, 0, 0);
     bgCol = parent.color(230, 230, 230);
     hlCol = parent.color(255, 100, 100);
@@ -35,13 +35,13 @@ public class Textbox extends GUIObjekt implements PConstants {
       } // end of if
       if (e.getKeyCode() == 39 && cursor < content.length()) {
         cursor++;
-        while (parent.textWidth(content.substring(startPos, cursor)) > breite - 10) {  
+        while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {  
           startPos++;
         } // end of if
       } // end of if
       if (e.getKeyCode() == 35) {
         cursor = content.length();
-        while (parent.textWidth(content.substring(startPos, cursor)) > breite - 10) {  
+        while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {  
           startPos++;
         } // end of if
       } // end of if
@@ -53,6 +53,7 @@ public class Textbox extends GUIObjekt implements PConstants {
     if (focused && e.getAction() == KeyEvent.TYPE) {
       if (e.getKey() == ENTER) {
         focused = false;
+        enterPressed = true;
       } else if (e.getKey() == BACKSPACE) { 
         if (cursor > 0) {
           if (cursor < content.length()) {
@@ -82,7 +83,7 @@ public class Textbox extends GUIObjekt implements PConstants {
         }
         content = a + e.getKey() + b;
         cursor++;
-        while (parent.textWidth(content.substring(startPos, cursor)) > breite - 10) {
+        while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {
           startPos++;
         } 
       } // end of if
@@ -101,7 +102,7 @@ public class Textbox extends GUIObjekt implements PConstants {
   }
   
   private void mouseOver(int x, int y) {
-    if (x > xPos && x < xPos + breite && y > yPos && y < yPos + hoehe) {
+    if (x > xPos && x < xPos + width && y > yPos && y < yPos + height) {
       parent.cursor(TEXT);
       hovered = true;
     } else {
@@ -117,6 +118,7 @@ public class Textbox extends GUIObjekt implements PConstants {
       int dX = x - 5 - xPos;
       int minD = 100;
       int ind = 0;
+      parent.textSize(20);
       for (int i = 0; i <= content.substring(startPos).length() ;i++ ) {
         int d = (int)parent.abs(parent.textWidth(content.substring(startPos, startPos + i)) - dX);
         if (d < minD) {
@@ -130,31 +132,40 @@ public class Textbox extends GUIObjekt implements PConstants {
     } // end of if-else
   }
   
+  public boolean wasEnterPressed() {
+    if (enterPressed) {
+      enterPressed = false;
+      return true;
+    } else {
+      return false;
+    } // end of if-else
+  }
+  
   public void draw() {
     parent.textSize(20);
     parent.textAlign(LEFT, CENTER);
     parent.noStroke();
     parent.fill(bgCol);
-    parent.rect(xPos, yPos, breite, hoehe);
+    parent.rect(xPos, yPos, width, height);
     parent.stroke(hlCol);
     parent.strokeWeight(2);
-    parent.line(xPos, yPos - 2, xPos, yPos + hoehe + 2);
-    parent.line(xPos + breite, yPos - 2, xPos + breite, yPos + hoehe + 2);
+    parent.line(xPos, yPos - 2, xPos, yPos + height + 2);
+    parent.line(xPos + width, yPos - 2, xPos + width, yPos + height + 2);
     parent.fill(col);
     parent.strokeWeight(1);
     int x = xPos + 5 + (int)parent.textWidth(content.substring(startPos, cursor));
-    parent.text(content.substring(startPos), xPos + 5, yPos, breite - 10, hoehe);
+    parent.text(content.substring(startPos), xPos + 5, yPos, width - 10, height);
     if (focused && parent.millis() % 800 < 300) {
-      parent.line(x, yPos + 5, x, yPos + hoehe - 5);
+      parent.line(x, yPos + 5, x, yPos + height - 5);
     } // end of if
     
   }
   
-  public void setzeFarbe(int c) {
+  public void setColor(int c) {
     col = c;
   }
   
-  public void setzeHintergrundFarbe(int c) {
+  public void setBackgroundColor(int c) {
     bgCol = c;
   }
   

@@ -8,14 +8,14 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class Slider extends GUIObjekt implements PConstants {
+public class Slider extends GUIObject implements PConstants {
   
-  private int breite, minValue, maxValue, step, value, col, bgCol, markerStep;
+  private int width, minValue, maxValue, step, value, col, bgCol, markerStep;
   private boolean showMarkers, hovered, pressed;
   
   public Slider(PApplet p, int x, int y, int b) {
     super(p, x, y);
-    breite = b;
+    width = b;
     minValue = 0;
     maxValue = 100;
     step = 1;
@@ -53,7 +53,7 @@ public class Slider extends GUIObjekt implements PConstants {
   public void draw() {
     parent.strokeWeight(2);
     parent.stroke(col);
-    parent.line(xPos, yPos, xPos + breite, yPos); 
+    parent.line(xPos, yPos, xPos + width, yPos); 
     if (showMarkers) {
       for (int i = minValue; i <= maxValue ; i++ ) {
         if (i % markerStep == 0) {
@@ -121,11 +121,11 @@ public class Slider extends GUIObjekt implements PConstants {
   }
   
   private int getXFromValue(int v) {
-    return (int)(xPos + ((float)breite / (maxValue - minValue)) * (v - minValue));
+    return (int)(xPos + ((float)width / (maxValue - minValue)) * (v - minValue));
   }
   
   private int getValueFromX(int x) {
-    int v = (((x - xPos) * (maxValue - minValue)) / breite) + minValue;
+    int v = (((x - xPos) * (maxValue - minValue)) / width) + minValue;
     if (v < minValue) {
       v = minValue;
     } // end of if

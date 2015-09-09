@@ -8,11 +8,11 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public abstract class GUIObjekt implements PConstants {
+public abstract class GUIObject implements PConstants {
   protected int xPos, yPos;
   protected PApplet parent;
   
-  public GUIObjekt(PApplet p, int x, int y) {
+  public GUIObject(PApplet p, int x, int y) {
     parent = p;
     xPos = x;
     yPos = y;

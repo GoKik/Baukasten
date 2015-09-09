@@ -9,20 +9,20 @@ import processing.awt.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 
-public class TabContainer extends GUIObjekt implements PConstants {
+public class TabContainer extends GUIObject implements PConstants {
   
   private ArrayList<Tab> tabs;
   private ArrayList<String> tabNames;
   private int selectedTab = 0;
-  private int breite, hoehe, col, bgCol;
+  private int width, height, col, bgCol;
   private int hovered = -1, clicked = -1;
   
   public TabContainer(PApplet p, int x, int y, int b, int h) {
     super(p, x, y);
     tabs = new ArrayList<Tab>();
     tabNames = new ArrayList<String>();
-    breite = b;
-    hoehe = h;
+    width = b;
+    height = h;
   }
   
   public void setColor(int c) {
@@ -44,7 +44,11 @@ public class TabContainer extends GUIObjekt implements PConstants {
     tabNames.remove(i);
   }
   
-  public void addObject(String n, GUIObjekt o) {
+  public int getSelectedTab() {
+    return selectedTab;
+  }
+  
+  public void addObject(String n, GUIObject o) {
     int i = tabNames.indexOf(n);
     tabs.get(i).addObject(o);
   }
@@ -52,7 +56,7 @@ public class TabContainer extends GUIObjekt implements PConstants {
   public void draw() {
     parent.noStroke();  
     parent.fill(bgCol);
-    parent.rect(xPos, yPos, breite, 40);
+    parent.rect(xPos, yPos, width, 40);
     parent.fill(col);
     parent.textAlign(CENTER, CENTER);
     
@@ -105,18 +109,18 @@ public class TabContainer extends GUIObjekt implements PConstants {
     hovered = -1;
   }
   
-  private class Tab extends GUIObjekt implements PConstants {
+  private class Tab extends GUIObject implements PConstants {
     
     private String name;
-    private ArrayList<GUIObjekt> objects;
+    private ArrayList<GUIObject> objects;
     
     public Tab(PApplet p, String n) {
       super(p, 0, 0);
       name = n;
-      objects = new ArrayList<GUIObjekt>();
+      objects = new ArrayList<GUIObject>();
     }
     
-    public void addObject(GUIObjekt o) {
+    public void addObject(GUIObject o) {
       objects.add(o);
     }
     

@@ -8,22 +8,20 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class Baukasten implements PConstants {
+public class Toolbox implements PConstants {
   PApplet parent;
   
   public final static int JAVA_MODE = 1;
   public final static int ANDROID_MODE = 2;
   private int mode;
-  private ArrayList<GUIObjekt> objects = new ArrayList<GUIObjekt>();
+  private ArrayList<GUIObject> objects = new ArrayList<GUIObject>();
   
-  public Baukasten(PApplet parent, int m) {
+  public Toolbox(PApplet parent, int m) {
     this.parent = parent;
     if (m == JAVA_MODE || m == ANDROID_MODE) {
       mode = m;
     }
-    parent.registerMethod("pre", this);
     parent.registerMethod("draw", this);
-    parent.registerMethod("post", this);
     parent.registerMethod("mouseEvent", this);
     parent.registerMethod("keyEvent", this);
     parent.registerMethod("pause", this);
@@ -31,15 +29,15 @@ public class Baukasten implements PConstants {
     parent.registerMethod("dispose", this);
   }
   
-  public void fuegeEin(GUIObjekt o) {
+  public void add(GUIObject o) {
     objects.add(o);
   }
   
-  public void loescheAlles() {
+  public void clear() {
     objects.clear();
   }
   
-  public void setzeInHintergrund(GUIObjekt o) {
+  public void setToBack(GUIObject o) {
     int i = objects.indexOf(o);
     if (i != -1) {
       objects.remove(i);
@@ -47,7 +45,7 @@ public class Baukasten implements PConstants {
     } // end of if
   }
   
-  public void setzeInVordergrund(GUIObjekt o) {
+  public void setToFront(GUIObject o) {
     int i = objects.indexOf(o);
     if (i != -1) {
       objects.remove(i);
@@ -56,18 +54,10 @@ public class Baukasten implements PConstants {
     
   }
   
-  public void pre() {
-    
-  }
-  
   public void draw() {
     for (int i = 0; i < objects.size(); i++) {
       objects.get(i).draw();
     }
-  }
-  
-  public void post() {
-    
   }
   
   public void mouseEvent(MouseEvent e) {
@@ -81,7 +71,9 @@ public class Baukasten implements PConstants {
   }  
   
   public void keyEvent(KeyEvent e) {
-    
+    for (int i = 0; i < objects.size(); i++) {
+      objects.get(i).keyEvent(e);
+    }
   }
   
   public void pause() {

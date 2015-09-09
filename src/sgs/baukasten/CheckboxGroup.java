@@ -8,17 +8,17 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class WahlboxGruppe extends GUIObjekt implements PConstants {
+public class CheckboxGroup extends GUIObject implements PConstants {
   
-  private ArrayList<Wahlbox> boxes;
+  private ArrayList<Checkbox> boxes;
   private int checkedBox = 0;
   
-  public WahlboxGruppe(PApplet p) {
+  public CheckboxGroup(PApplet p) {
     super(p, 0, 0);
     boxes = new ArrayList();
   }
   
-  public void fuegeEin(Wahlbox b) {
+  public void add(Checkbox b) {
     boxes.add(b);
     if (boxes.size() == 1) {
       boxes.get(0).check();
@@ -35,7 +35,7 @@ public class WahlboxGruppe extends GUIObjekt implements PConstants {
     int b = -1;
     for (int i = 0; i < boxes.size(); i++) {
       boxes.get(i).mouseEvent(e);
-      if (i != checkedBox && boxes.get(i).istGewaehlt()) {
+      if (i != checkedBox && boxes.get(i).isChecked()) {
         b = i;
       } // end of if
     } // end of for

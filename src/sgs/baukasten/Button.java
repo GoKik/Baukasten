@@ -8,85 +8,85 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class Knopf extends GUIObjekt implements PConstants{
+public class Button extends GUIObject implements PConstants{
   
   public final static int RECT = 1;
   public final static int ROUND = 2;
   
   private String name;
   private int col, bgCol, disCol;
-  private int breite, hoehe, textGroesse, stil;
+  private int width, height, textSize, style;
   private boolean hovered, disabled, pressed, clicked;
   
-  public Knopf(PApplet p, String n, int x, int y, int b, int h) {
+  public Button(PApplet p, String n, int x, int y, int b, int h) {
     super(p, x, y);
     name = n;
-    breite = b;
-    hoehe = h;
-    textGroesse = 15;
+    width = b;
+    height = h;
+    textSize = 15;
+    while (parent.textWidth(n) > b - 10) { 
+      textSize--;
+      parent.textSize(textSize);
+    } // end of while
     col = p.color(0, 0, 0);
     bgCol = p.color(255, 255, 255);
     disCol = p.color(30, 30, 30, 150);
   }
   
-  public void setzeFarbe(int c) {
+  public void setColor(int c) {
     col = c;
   }
   
-  public void setzeHintergrundFarbe(int c) {
+  public void setBackgroundColor(int c) {
     bgCol = c;
   }
+
   
-  public void setzeTextGroesse(int t) {
-    textGroesse = t;
-  }
-  
-  public void setzeStil(int i) {
+  public void setStyle(int i) {
     if (i == RECT || i == ROUND) {
-      stil = i;
-      hoehe = breite;
+      style = i;
+      height = width;
     }
   }
   
   public void draw() {
-    parent.textSize(textGroesse);
     parent.textAlign(CENTER, CENTER);
     parent.strokeWeight(2);
     
     if (pressed) {
       parent.fill(col);
       parent.stroke(bgCol);
-      drawBody(xPos, yPos, breite, hoehe);
+      drawBody(xPos, yPos, width, height);
       parent.fill(bgCol);
-      parent.text(name, xPos + (breite / 2), yPos + (hoehe / 2));
+      parent.text(name, xPos + (width / 2), yPos + (height / 2));
     } else if (hovered) {
       parent.fill(col);
       parent.stroke(col);
-      drawBody(xPos, yPos, breite, hoehe);
+      drawBody(xPos, yPos, width, height);
       parent.fill(bgCol);
-      parent.text(name, xPos + (breite / 2), yPos + (hoehe / 2));
+      parent.text(name, xPos + (width / 2), yPos + (height / 2));
     } else {
       parent.fill(bgCol);
       parent.stroke(col);
-      drawBody(xPos, yPos, breite, hoehe);
+      drawBody(xPos, yPos, width, height);
       parent.fill(col);
-      parent.text(name, xPos + (breite / 2), yPos + (hoehe / 2));
+      parent.text(name, xPos + (width / 2), yPos + (height / 2));
     }
     
     if (disabled) {
       parent.fill(disCol);
       parent.stroke(disCol);
-      drawBody(xPos, yPos, breite, hoehe);
+      drawBody(xPos, yPos, width, height);
       parent.fill(255, 255, 255);
       parent.textAlign(CENTER, CENTER);
-      parent.text("DISABLED", xPos + (breite / 2), yPos + (hoehe / 2));
+      parent.text("DISABLED", xPos + (width / 2), yPos + (height / 2));
     }
   }
   
   private void drawBody(int x, int y, int b, int h) {
-    if (stil == RECT) {
+    if (style == RECT) {
       parent.rect(x, y, b, h);
-    } else if (stil == ROUND) {
+    } else if (style == ROUND) {
       parent.ellipseMode(CORNER);
       parent.ellipse(x, y, b, h);
     }
@@ -103,14 +103,14 @@ public class Knopf extends GUIObjekt implements PConstants{
   }
   
   private void mouseOver(int x, int y) {
-    if (stil == RECT) {
-      if (x > xPos && x < xPos + breite && y > yPos && y < yPos + hoehe) {
+    if (style == RECT) {
+      if (x > xPos && x < xPos + width && y > yPos && y < yPos + height) {
         hovered = true;
       } else {
         hovered = false;
       }
-    } else if (stil == ROUND) {
-      if (parent.sqrt(parent.pow(x - (xPos + (breite/2)), 2) + parent.pow(y - (yPos + (breite/2)), 2)) < breite/2) {
+    } else if (style == ROUND) {
+      if (parent.sqrt(parent.pow(x - (xPos + (width/2)), 2) + parent.pow(y - (yPos + (width/2)), 2)) < width/2) {
         hovered = true;
       } else {
         hovered = false;
@@ -146,7 +146,7 @@ public class Knopf extends GUIObjekt implements PConstants{
     pressed = false;
   }
   
-  public boolean wurdeGedrueckt() {
+  public boolean wasPressed() {
     if (clicked) {
       clicked = false;
       return true;
@@ -159,7 +159,7 @@ public class Knopf extends GUIObjekt implements PConstants{
     return hovered;
   }
   
-  public boolean istGedrueckt() {
+  public boolean isPressed() {
     return pressed;
   }
   

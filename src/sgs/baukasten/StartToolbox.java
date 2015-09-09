@@ -1,53 +1,53 @@
-//package sgs.baukasten;
+//package sgs.toolbox;
 
 import processing.core.*;     
 import processing.data.*; 
 import processing.event.*; 
 import processing.opengl.*; 
 
-public class StartBaukasten extends PApplet{
+public class StartToolbox extends PApplet{
   
-  Baukasten baukasten;
-  Stift stift;
-  Knopf kLoesche;
-  Wahlbox w1, w2, w3, wT;
-  WahlboxGruppe wG;
+  Toolbox toolbox;
+  Pencil pencil;
+  Button btnClear;
+  Checkbox c1, c2, c3, cT;
+  CheckboxGroup cG;
   Slider sR, sG, sB, sM;
   Textbox tBox;
   TabContainer tC;
   
   public void setup() {
     
-    baukasten = new Baukasten(this, Baukasten.JAVA_MODE);
+    toolbox = new Toolbox(this, Toolbox.JAVA_MODE);
     
-    stift = new Stift(this);
-    stift.setzeBereich(width/2, 0, width, height);
-    stift.setzeHintergrundFarbe(color(240));
+    pencil = new Pencil(this);
+    pencil.setBounds(width/2, 0, width, height);
+    pencil.setBackgroundColor(color(240));
     
-    kLoesche = new Knopf(this, "Lösche", 20, 80, 60, 60);
-    kLoesche.setzeFarbe(color(255, 100, 100));
-    kLoesche.setzeHintergrundFarbe(color(255));
-    kLoesche.setzeStil(Knopf.ROUND);
+    btnClear = new Button(this, "Lösche", 20, 80, 60, 60);
+    btnClear.setColor(color(255, 100, 100));
+    btnClear.setBackgroundColor(color(255));
+    btnClear.setStyle(Button.ROUND);
     
-    w1 = new Wahlbox(this, "Test", 30, 240, false);
-    w1.setzeStil(Wahlbox.CHECKBOX_ROUND);
-    w1.setzeFarbe(color(255, 100, 100));
+    c1 = new Checkbox(this, "Test", 30, 240, false);
+    c1.setStyle(Checkbox.CHECKBOX_ROUND);
+    c1.setColor(color(255, 100, 100));
     
-    w2 = new Wahlbox(this, "Test", 30, 280, true);
-    w2.setzeStil(Wahlbox.CHECKBOX_ROUND);
-    w2.setzeFarbe(color(255, 100, 100));
+    c2 = new Checkbox(this, "Test", 30, 280, true);
+    c2.setStyle(Checkbox.CHECKBOX_ROUND);
+    c2.setColor(color(255, 100, 100));
     
-    w3 = new Wahlbox(this, "Test", 30, 320, false);
-    w3.setzeStil(Wahlbox.CHECKBOX_ROUND);
-    w3.setzeFarbe(color(255, 100, 100));
+    c3 = new Checkbox(this, "Test", 30, 320, false);
+    c3.setStyle(Checkbox.CHECKBOX_ROUND);
+    c3.setColor(color(255, 100, 100));
     
-    wG = new WahlboxGruppe(this);
-    wG.fuegeEin(w1);
-    wG.fuegeEin(w2);      
-    wG.fuegeEin(w3);
+    cG = new CheckboxGroup(this);
+    cG.add(c1);
+    cG.add(c2);      
+    cG.add(c3);
     
-    wT = new Wahlbox(this, "Do sth.", 50, 300, false);
-    wT.setzeFarbe(color(255, 100, 100));
+    cT = new Checkbox(this, "Do sth.", 50, 300, false);
+    cT.setColor(color(255, 100, 100));
     
     sR = new Slider(this, 40, 160, 300);
     sR.setColor(color(255, 100, 100));
@@ -86,42 +86,42 @@ public class StartBaukasten extends PApplet{
     tC.addObject("Colors", sM);
     
     tC.newTab("Buttons");
-    tC.addObject("Buttons", kLoesche);
-    tC.addObject("Buttons", wG);
+    tC.addObject("Buttons", btnClear);
+    tC.addObject("Buttons", cG);
     
     tC.newTab("Text");
     tC.addObject("Text", tBox);
-    tC.addObject("Text", wT);
+    tC.addObject("Text", cT);
     
-    baukasten.fuegeEin(tC);
-    baukasten.fuegeEin(stift);
+    toolbox.add(tC);
+    toolbox.add(pencil);
   }
   
   public void draw() {
     background(100);
     
-    if (kLoesche.wurdeGedrueckt()) {
-      stift.loescheZeichnung();
+    if (btnClear.wasPressed()) {
+      pencil.clearDrawing();
     }
     
     if (tC.getSelectedTab() == 0) {
       text(sM.getValue(), 370, 360);
     } // end of if
     
-    stift.setzeFarbe(color(sR.getValue(), sG.getValue(), sB.getValue()));
+    pencil.setColor(color(sR.getValue(), sG.getValue(), sB.getValue()));
     
-    stift.bewegeBis(mouseX, mouseY);
+    pencil.moveTo(mouseX, mouseY);
   }
   
   public void mousePressed() {
-    if (stift.istOben()) {
-      stift.bewegeBis(mouseX, mouseY);
-      stift.runter();
+    if (pencil.isUp()) {
+      pencil.moveTo(mouseX, mouseY);
+      pencil.down();
     }
   }
   
   public void mouseReleased() {
-    stift.hoch();
+    pencil.up();
   }  
   
   public void settings() {  
@@ -129,7 +129,7 @@ public class StartBaukasten extends PApplet{
     //orientation(LANDSCAPE);
   }
   static public void main(String[] passedArgs) {
-    String[] appletArgs = new String[] { "StartBaukasten" };
+    String[] appletArgs = new String[] { "StartToolbox" };
     if (passedArgs != null) {
       PApplet.main(concat(appletArgs, passedArgs));
     } else {
