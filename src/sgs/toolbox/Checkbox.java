@@ -49,6 +49,7 @@ public class Checkbox extends GUIObject implements PConstants {
       height = width;
     } else if (i == TOGGLE_BUTTON) {
       style = i;
+      width = height * 2;
     }
   }
   
@@ -113,14 +114,24 @@ public class Checkbox extends GUIObject implements PConstants {
     }
   }
   
-  public void mouseEvent(MouseEvent e) {
+  public boolean mouseEvent(MouseEvent e) {
     if (e.getAction() == MouseEvent.MOVE) {
       mouseOver(e.getX(), e.getY());
+      if (hovered) {
+        return true;
+      } // end of if
     } else if (e.getAction() == MouseEvent.PRESS) {
       pressed(e.getX(), e.getY());
+      if (pressed) {
+        return true;
+      } // end of if
     } else if (e.getAction() == MouseEvent.RELEASE) {
       clicked(e.getX(), e.getY());
+      if (hovered) {
+        return true;
+      } // end of if
     }
+    return false;
   }
   
   private void mouseOver(int x, int y) {

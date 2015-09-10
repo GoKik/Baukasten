@@ -31,19 +31,22 @@ public class CheckboxGroup extends GUIObject implements PConstants {
     } // end of for
   }
   
-  public void mouseEvent(MouseEvent e) {
+  public boolean mouseEvent(MouseEvent e) {
     int b = -1;
     for (int i = 0; i < boxes.size(); i++) {
-      boxes.get(i).mouseEvent(e);
-      if (i != checkedBox && boxes.get(i).isChecked()) {
-        b = i;
-      } // end of if
+      if (boxes.get(i).mouseEvent(e)) {
+        if (i != checkedBox && boxes.get(i).isChecked()) {
+          b = i;
+        } // end of if
+        if (b != -1) {
+          boxes.get(checkedBox).uncheck();
+          boxes.get(b).check();
+          checkedBox = b;
+        }
+        return true;
+      }
     } // end of for
-    if (b != -1) {
-      boxes.get(checkedBox).uncheck();
-      boxes.get(b).check();
-      checkedBox = b;
-    }
+    return false;
   }
   
   public void keyEvent(KeyEvent e) {

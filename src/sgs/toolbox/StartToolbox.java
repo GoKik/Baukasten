@@ -9,10 +9,10 @@ public class StartToolbox extends PApplet{
   
   Toolbox toolbox;
   Pencil pencil;
-  Button btnClear;
-  Checkbox c1, c2, c3, cT;
-  CheckboxGroup cG;
-  Slider sR, sG, sB, sM;
+  Button btnClear, btnRect;
+  Checkbox c1, c2, c3, c21, c22, c23, c31, c32, c33, cT;
+  CheckboxGroup cG1, cG2, cG3;
+  Slider sR, sG, sB, sM, sV;
   Textbox tBox;
   TabContainer tC;
   
@@ -23,6 +23,7 @@ public class StartToolbox extends PApplet{
     pencil = new Pencil(this);
     pencil.setBounds(width/2, 0, width, height);
     pencil.setBackgroundColor(color(240));
+    pencil.snapToMouse(true);
     
     btnClear = new Button(this, "Lösche", 20, 80, 60, 60);
     btnClear.setColor(color(255, 100, 100));
@@ -41,25 +42,56 @@ public class StartToolbox extends PApplet{
     c3.setStyle(Checkbox.CHECKBOX_ROUND);
     c3.setColor(color(255, 100, 100));
     
-    cG = new CheckboxGroup(this);
-    cG.add(c1);
-    cG.add(c2);      
-    cG.add(c3);
+    c21 = new Checkbox(this, "Test", 130, 240, false);
+    c21.setStyle(Checkbox.CHECKBOX);
+    c21.setColor(color(255, 100, 100));
     
-    cT = new Checkbox(this, "Do sth.", 50, 300, false);
-    cT.setColor(color(255, 100, 100));
+    c22 = new Checkbox(this, "Test", 130, 280, false);
+    c22.setStyle(Checkbox.CHECKBOX);
+    c22.setColor(color(255, 100, 100));
     
-    sR = new Slider(this, 40, 160, 300);
+    c23 = new Checkbox(this, "Test", 130, 320, false);
+    c23.setStyle(Checkbox.CHECKBOX);
+    c23.setColor(color(255, 100, 100));
+    
+    c31 = new Checkbox(this, "Test", 230, 240, false);
+    c31.setStyle(Checkbox.TOGGLE_BUTTON);
+    c31.setColor(color(255, 100, 100));
+    
+    c32 = new Checkbox(this, "Test", 230, 280, false);
+    c32.setStyle(Checkbox.TOGGLE_BUTTON);
+    c32.setColor(color(255, 100, 100));
+    
+    c33 = new Checkbox(this, "Test", 230, 320, false);
+    c33.setStyle(Checkbox.TOGGLE_BUTTON);
+    c33.setColor(color(255, 100, 100));
+    
+    cG1 = new CheckboxGroup(this);
+    cG1.add(c1);
+    cG1.add(c2);      
+    cG1.add(c3);
+    
+    cG2 = new CheckboxGroup(this);
+    cG2.add(c21);
+    cG2.add(c22);      
+    cG2.add(c23);
+    
+    cG3 = new CheckboxGroup(this);
+    cG3.add(c31);
+    cG3.add(c32);      
+    cG3.add(c33);
+    
+    sR = new Slider(this, 40, 120, 300);
     sR.setColor(color(255, 100, 100));
     sR.setMaxValue(255); 
     sR.setBackgroundColor(color(100));
     
-    sG = new Slider(this, 40, 190, 300);
+    sG = new Slider(this, 40, 150, 300);
     sG.setColor(color(255, 100, 100));
     sG.setMaxValue(255);  
     sG.setBackgroundColor(color(100));
     
-    sB = new Slider(this, 40, 220, 300);
+    sB = new Slider(this, 40, 180, 300);
     sB.setColor(color(255, 100, 100));
     sB.setMaxValue(255);  
     sB.setBackgroundColor(color(100));
@@ -72,6 +104,11 @@ public class StartToolbox extends PApplet{
     sM.setMarkerStep(100);
     sM.showMarkers(true);
     sM.setBackgroundColor(color(100));
+    
+    sV = new Slider(this, 370, 80, 370);
+    sV.setColor(color(255, 100, 100));
+    sV.setStyle(Slider.VERTICAL);
+    sV.setBackgroundColor(color(100));
     
     tBox = new Textbox(this, 50, 150, 200, 30);
     
@@ -87,11 +124,14 @@ public class StartToolbox extends PApplet{
     
     tC.newTab("Buttons");
     tC.addObject("Buttons", btnClear);
-    tC.addObject("Buttons", cG);
+    tC.addObject("Buttons", cG1);
+    tC.addObject("Buttons", cG2);
+    tC.addObject("Buttons", cG3);
     
     tC.newTab("Text");
     tC.addObject("Text", tBox);
-    tC.addObject("Text", cT);
+    tC.addObject("Text", cT); 
+    tC.addObject("Text", sV);
     
     toolbox.add(tC);
     toolbox.add(pencil);
@@ -110,19 +150,8 @@ public class StartToolbox extends PApplet{
     
     pencil.setColor(color(sR.getValue(), sG.getValue(), sB.getValue()));
     
-    pencil.moveTo(mouseX, mouseY);
   }
   
-  public void mousePressed() {
-    if (pencil.isUp()) {
-      pencil.moveTo(mouseX, mouseY);
-      pencil.down();
-    }
-  }
-  
-  public void mouseReleased() {
-    pencil.up();
-  }  
   
   public void settings() {  
     size(800, 480);

@@ -28,6 +28,7 @@ public class Button extends GUIObject implements PConstants{
       textSize--;
       parent.textSize(textSize);
     } // end of while
+    style = 1;
     col = p.color(0, 0, 0);
     bgCol = p.color(255, 255, 255);
     disCol = p.color(30, 30, 30, 150);
@@ -52,7 +53,7 @@ public class Button extends GUIObject implements PConstants{
   public void draw() {
     parent.textAlign(CENTER, CENTER);
     parent.strokeWeight(2);
-    
+    parent.textSize(textSize);
     if (pressed) {
       parent.fill(col);
       parent.stroke(bgCol);
@@ -92,14 +93,24 @@ public class Button extends GUIObject implements PConstants{
     }
   }
   
-  public void mouseEvent(MouseEvent e) {
+  public boolean mouseEvent(MouseEvent e) {
     if (e.getAction() == MouseEvent.MOVE) {
       mouseOver(e.getX(), e.getY());
+      if (hovered) {
+        return true;
+      } // end of if
     } else if (e.getAction() == MouseEvent.PRESS) {
       pressed(e.getX(), e.getY());
+      if (pressed) {
+        return true;
+      } // end of if
     } else if (e.getAction() == MouseEvent.RELEASE) {
       clicked(e.getX(), e.getY());
+      if (clicked) {
+        return true;
+      } // end of if
     }
+    return false;
   }
   
   private void mouseOver(int x, int y) {

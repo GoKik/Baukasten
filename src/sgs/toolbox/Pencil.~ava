@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Pencil extends GUIObject implements PConstants {
   
-  private boolean isDown, fillBG;
+  private boolean isDown, fillBG, snapToM;
   private int oldX, oldY, minX, minY, maxX, maxY;
   private float angle = 0;
   private ArrayList<Line> drawing = new ArrayList<Line>();
@@ -26,8 +26,30 @@ public class Pencil extends GUIObject implements PConstants {
     maxY = parent.height;
   }
   
-  public void mouseEvent(MouseEvent e) {
-    //nothing
+  public void snapToMouse(boolean s) {
+    snapToM = s;
+  }
+  
+  public boolean mouseEvent(MouseEvent e) {
+    if (snapToM && inBounds(e.getX(), e.getY())) {
+      if (e.getAction() == MouseEvent.PRESS) {
+        if (isUp()) {
+          moveTo(e.getX(), e.getY());
+          down();
+        }
+      } else if (e.getAction() == MouseEvent.RELEASE) {
+        up();
+      } else if (e.getAction() == MouseEvent.DRAG) {
+        moveTo(e.getX(), e.getY());
+      }
+      return true;
+    } else {
+      return false;
+    } // end of if-else
+  }
+  
+  private boolean inBounds(int x, int y) {
+    return (x > minX && x < maxX && y > minY && y < maxY);
   }
   
   public void keyEvent(KeyEvent e) {

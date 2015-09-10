@@ -19,7 +19,7 @@ public abstract class GUIObject implements PConstants {
   }
   
   public abstract void draw();
-  public abstract void mouseEvent(MouseEvent e);
+  public abstract boolean mouseEvent(MouseEvent e);
   public abstract void keyEvent(KeyEvent e);
   
   public int getXPos() {

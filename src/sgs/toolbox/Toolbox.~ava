@@ -62,7 +62,9 @@ public class Toolbox implements PConstants {
   
   public void mouseEvent(MouseEvent e) {
     for (int i = 0; i < objects.size(); i++) {
-      objects.get(i).mouseEvent(e);
+      if (objects.get(i).mouseEvent(e)) {
+        break;
+      }
     }
     if (mode == ANDROID_MODE && e.getAction() == MouseEvent.RELEASE) {
       parent.mouseX = -1;
