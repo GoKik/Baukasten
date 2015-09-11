@@ -56,7 +56,7 @@ public class TabContainer extends GUIObject implements PConstants {
   public void draw() {
     parent.noStroke();  
     parent.fill(bgCol);
-    parent.rect(xPos, yPos, width, 40);
+    parent.rect(xPos, yPos, width, height);
     parent.fill(col);
     parent.textAlign(CENTER, CENTER);
     
@@ -101,7 +101,7 @@ public class TabContainer extends GUIObject implements PConstants {
   
   private void mouseOver(int x, int y) {
     for (int i = 0; i < tabs.size() ; i++ ) {
-      if (x > xPos + (i * 70) && x < xPos + (i * 70) + 70 && y > yPos && y < yPos + 40) {
+      if (x > xPos + (i * 70) && x < xPos + (i * 70) + 70 && y > yPos && y < yPos + height) {
         hovered = i;
         return;
       } // end of if

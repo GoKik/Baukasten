@@ -13,23 +13,37 @@ public class Slider extends GUIObject implements PConstants {
   public static final int HORIZONTAL = 1;
   public static final int VERTICAL = 2;
   
-  private int width, minValue, maxValue, step, value, col, bgCol, markerStep, style;
-  private boolean showMarkers, hovered, pressed;
+  private int width, col, bgCol, style;
+  private float startValue, stopValue, step, value, markerStep;
+  private boolean showMarkers, hovered, pressed, changed;
   
   public Slider(PApplet p, int x, int y, int w) {
     super(p, x, y);
     width = w;
-    minValue = 0;
-    maxValue = 100;
+    startValue = 0;
+    stopValue = 100;
     step = 1;
+    markerStep = 1;
     value = 0;
     style = 1;
     col = parent.color(0, 0, 0);
     bgCol = parent.color(255, 255, 255);
   }
   
-  public int getValue() {
+  public float getValue() {
     return value;
+  }
+  
+  public void setValue(float i) {
+    value = i;
+    if (value % step != 0) {
+      float s = value % step;
+      if (s < step / 2) {
+        value -= s;
+      } else {
+        value += (step - s);
+      } // end of if-else
+    } // end of if
   }
   
   public void setColor(int c) {
@@ -46,17 +60,23 @@ public class Slider extends GUIObject implements PConstants {
     } // end of if
   }
   
-  public void setMaxValue(int m) {
-    maxValue = m;
-    if (value > maxValue) {
-      value = maxValue;
+  public void setStopValue(float s) {
+    stopValue = s;
+    if (stopValue >= startValue && value > stopValue) {
+      value = stopValue;
+    } // end of if
+    if (stopValue < startValue && value < stopValue) {
+      value = stopValue;
     } // end of if
   }
   
-  public void setMinValue(int m) {
-    minValue = m;
-    if (value < minValue) {
-      value = minValue;
+  public void setStartValue(float s) {
+    startValue = s;
+    if (startValue <= stopValue && value < startValue) {
+      value = startValue;
+    } // end of if
+    if (startValue > stopValue && value > startValue) {
+      value = startValue;
     } // end of if
   }
   
@@ -68,17 +88,24 @@ public class Slider extends GUIObject implements PConstants {
     } else {
       parent.line(xPos, yPos, xPos, yPos + width); 
     } // end of if-else
+    float min = startValue;
+    float max = stopValue;
+    if (startValue > stopValue) {
+      min = stopValue;
+      max = startValue;
+    }
     if (showMarkers) {
-      for (int i = minValue; i <= maxValue ; i++ ) {
-        if (i % markerStep == 0) {
-          if (style == HORIZONTAL) {
-            parent.line(getXFromValue(i), yPos - 10, getXFromValue(i), yPos + 10);
-          } else {
-            parent.line(xPos - 10, getYFromValue(i), xPos + 10, getYFromValue(i)); 
-          } // end of if-else
-        } // end of if
+      float p = min + (min % markerStep);
+      
+      for (float i = p; i <= max; i += markerStep ) {
+        if (style == HORIZONTAL) {
+          parent.line(getXFromValue(i), yPos - 10, getXFromValue(i), yPos + 10);
+        } else {
+          parent.line(xPos - 10, getYFromValue(i), xPos + 10, getYFromValue(i)); 
+        } // end of if-else
       } // end of for
     } // end of if
+    
     parent.fill(col);
     parent.ellipseMode(CENTER);
     parent.stroke(bgCol);
@@ -100,11 +127,11 @@ public class Slider extends GUIObject implements PConstants {
     } // end of if-else  
   }
   
-  public void setMarkerStep(int s) {
+  public void setMarkerStep(float s) {
     markerStep = s;
   }
   
-  public void setStep(int s) {
+  public void setStep(float s) {
     step = s;
   }
   
@@ -123,6 +150,7 @@ public class Slider extends GUIObject implements PConstants {
       return true;
     } else if (pressed && e.getAction() == MouseEvent.RELEASE) {
       pressed = false;
+      changed = true;
       return true;
     } else if (pressed && e.getAction() == MouseEvent.DRAG) {
       if (style == HORIZONTAL) {
@@ -156,25 +184,39 @@ public class Slider extends GUIObject implements PConstants {
     //nothing yet
   }
   
-  private int getXFromValue(int v) {
-    return (int)(xPos + ((float)width / (maxValue - minValue)) * (v - minValue));
+  public boolean valueChanged() {
+    if (changed) {
+      changed = false;
+      return true;
+    } else {
+      return false;
+    } // end of if-else
+  }
+  private int getXFromValue(float v) {
+    return (int)(xPos + ((float)width / (stopValue - startValue)) * (v - startValue));
   }  
   
-  private int getYFromValue(int v) {
-    return (int)(yPos + ((float)width / (maxValue - minValue)) * (v - minValue));
+  private int getYFromValue(float v) {
+    return (int)(yPos + ((float)width / (stopValue - startValue)) * (v - startValue));
   }
   
-  private int getValueFromX(int x) {
-    int v = (((x - xPos) * (maxValue - minValue)) / width) + minValue;
-    if (v < minValue) {
-      v = minValue;
+  private float getValueFromX(float x) {
+    float v = (((float)(x - xPos) * (stopValue - startValue)) / (float)width) + startValue;
+    float min = startValue;
+    float max = stopValue;
+    if (startValue > stopValue) {
+      min = stopValue;
+      max = startValue;
+    }
+    if (v < min) {
+      v = min;
     } // end of if
-    if (v > maxValue) {
-      v = maxValue;
+    if (v > max) {
+      v = max;
     } // end of if
     
     if (v % step != 0) {
-      int s = v % step;
+      float s = v % step;
       if (s < step / 2) {
         v -= s;
       } else {
@@ -185,17 +227,23 @@ public class Slider extends GUIObject implements PConstants {
     return v;
   }
   
-  private int getValueFromY(int y) {
-    int v = (((y - yPos) * (maxValue - minValue)) / width) + minValue;
-    if (v < minValue) {
-      v = minValue;
+  private float getValueFromY(int y) {
+    float v = (((float)(y - yPos) * (stopValue - startValue)) / (float)width) + startValue;
+    float min = startValue;
+    float max = stopValue;
+    if (startValue > stopValue) {
+      min = stopValue;
+      max = startValue;
+    }
+    if (v < min) {
+      v = min;
     } // end of if
-    if (v > maxValue) {
-      v = maxValue;
+    if (v > max) {
+      v = max;
     } // end of if
     
     if (v % step != 0) {
-      int s = v % step;
+      float s = v % step;
       if (s < step / 2) {
         v -= s;
       } else {

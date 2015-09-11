@@ -10,7 +10,7 @@ public class StartToolbox extends PApplet{
   Toolbox toolbox;
   Pencil pencil;
   Button btnClear, btnRect;
-  Checkbox c1, c2, c3, c21, c22, c23, c31, c32, c33, cT;
+  Checkbox c1, c2, c3, c21, c22, c23, c31, c32, c33;
   CheckboxGroup cG1, cG2, cG3;
   Slider sR, sG, sB, sM, sV;
   Textbox tBox;
@@ -83,25 +83,26 @@ public class StartToolbox extends PApplet{
     
     sR = new Slider(this, 40, 120, 300);
     sR.setColor(color(255, 100, 100));
-    sR.setMaxValue(255); 
+    sR.setStopValue(0); 
+    sR.setStartValue(255);
     sR.setBackgroundColor(color(100));
     
     sG = new Slider(this, 40, 150, 300);
     sG.setColor(color(255, 100, 100));
-    sG.setMaxValue(255);  
+    sG.setStopValue(255);  
     sG.setBackgroundColor(color(100));
     
     sB = new Slider(this, 40, 180, 300);
     sB.setColor(color(255, 100, 100));
-    sB.setMaxValue(255);  
+    sB.setStopValue(255);  
     sB.setBackgroundColor(color(100));
     
     sM = new Slider(this, 40, 360, 300);
     sM.setColor(color(255, 100, 100));
-    sM.setMaxValue(600);
-    sM.setMinValue(200);
-    sM.setStep(20);
-    sM.setMarkerStep(100);
+    sM.setStopValue(0.6f);
+    sM.setStartValue(0.1f);
+    sM.setStep(0.1f);
+    sM.setMarkerStep(0.1f);
     sM.showMarkers(true);
     sM.setBackgroundColor(color(100));
     
@@ -112,7 +113,7 @@ public class StartToolbox extends PApplet{
     
     tBox = new Textbox(this, 50, 150, 200, 30);
     
-    tC = new TabContainer(this, 0, 0, 400, 480);
+    tC = new TabContainer(this, 0, 0, 400, 40);
     tC.setColor(color(255));
     tC.setBackgroundColor(color(70));
     
@@ -130,7 +131,6 @@ public class StartToolbox extends PApplet{
     
     tC.newTab("Text");
     tC.addObject("Text", tBox);
-    tC.addObject("Text", cT); 
     tC.addObject("Text", sV);
     
     toolbox.add(tC);

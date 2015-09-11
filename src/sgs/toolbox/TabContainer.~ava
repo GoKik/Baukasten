@@ -75,28 +75,28 @@ public class TabContainer extends GUIObject implements PConstants {
     } // end of if
   }
   
-  public void mouseEvent(MouseEvent e) {
+  public boolean mouseEvent(MouseEvent e) {
     if (e.getAction() == MouseEvent.MOVE) {
       mouseOver(e.getX(), e.getY());
-    } else if (e.getAction() == MouseEvent.RELEASE) {
-      clicked(e.getX(), e.getY());
+      if (hovered > -1) {
+        return true;
+      } // end of if
+    } else if (hovered > -1 && e.getAction() == MouseEvent.RELEASE) {
+      selectedTab = hovered;
+      return true;
     }
     if (selectedTab < tabs.size()) {  
-      tabs.get(selectedTab).mouseEvent(e);
+      if (tabs.get(selectedTab).mouseEvent(e)) {
+        return true;
+      }
     }
+    return false;
   }
   
   public void keyEvent(KeyEvent e) {
     if (selectedTab < tabs.size()) {  
       tabs.get(selectedTab).keyEvent(e);
     }
-  }
-  
-  private void clicked(int x, int y) {
-    mouseOver(x, y);
-    if (hovered > -1) {
-      selectedTab = hovered;
-    } // end of if
   }
   
   private void mouseOver(int x, int y) {
@@ -142,6 +142,7 @@ public class TabContainer extends GUIObject implements PConstants {
           return true;
         }
       } // end of for
+      return false;
     }
   }
   
