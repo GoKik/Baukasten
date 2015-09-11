@@ -106,6 +106,20 @@ public class Textbox extends GUIObject implements PConstants {
       if (focused) {
         return true;
       } // end of if
+    } else if (focused && e.getAction() == MouseEvent.WHEEL) {
+      cursor += e.getCount();
+      if (cursor < 0) {
+        cursor = content.length();
+      } // end of if
+      if (cursor > content.length()) {
+        cursor = 0;
+      }
+      while (cursor < startPos) {
+        startPos--;
+      } // end of if
+      while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {  
+        startPos++;
+      } // end of if
     }
     return false;
   }

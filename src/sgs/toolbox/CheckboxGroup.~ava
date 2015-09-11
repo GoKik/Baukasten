@@ -46,6 +46,7 @@ public class CheckboxGroup extends GUIObject implements PConstants {
         return true;
       }
     } // end of for
+    return false;
   }
   
   public void keyEvent(KeyEvent e) {

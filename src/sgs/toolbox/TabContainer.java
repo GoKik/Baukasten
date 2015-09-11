@@ -48,6 +48,16 @@ public class TabContainer extends GUIObject implements PConstants {
     return selectedTab;
   }
   
+  public void chooseTab(int i) {
+    selectedTab = i;
+    if (selectedTab < 0) {
+      selectedTab = tabs.size() - 1;
+    } // end of if
+    if (selectedTab >= tabs.size()) {
+      selectedTab = 0;
+    } // end of if
+  }
+  
   public void addObject(String n, GUIObject o) {
     int i = tabNames.indexOf(n);
     tabs.get(i).addObject(o);
@@ -66,9 +76,9 @@ public class TabContainer extends GUIObject implements PConstants {
       } else {
         parent.textSize(12);
       } // end of if-else
-      parent.text(tabNames.get(i), xPos + (i * 70), yPos, 70, 40); 
+      parent.text(tabNames.get(i), xPos + (i * 70), yPos, 70, height); 
     } // end of for
-    parent.rect(xPos + (selectedTab * 70), yPos + 38, 70, 2);
+    parent.rect(xPos + (selectedTab * 70), yPos + height - 2, 70, 2);
     
     if (selectedTab < tabs.size()) {    
       tabs.get(selectedTab).draw();
@@ -84,6 +94,8 @@ public class TabContainer extends GUIObject implements PConstants {
     } else if (hovered > -1 && e.getAction() == MouseEvent.RELEASE) {
       selectedTab = hovered;
       return true;
+    } else if (isBarHovered(e.getX(), e.getY()) && e.getAction() == MouseEvent.WHEEL) {
+      chooseTab(selectedTab - e.getCount());
     }
     if (selectedTab < tabs.size()) {  
       if (tabs.get(selectedTab).mouseEvent(e)) {
@@ -91,6 +103,14 @@ public class TabContainer extends GUIObject implements PConstants {
       }
     }
     return false;
+  }
+  
+  private boolean isBarHovered(int x, int y) {
+    if (x > xPos && x < xPos + width && y > yPos && y < yPos + height) {
+      return true;
+    } else {
+      return false;
+    }
   }
   
   public void keyEvent(KeyEvent e) {

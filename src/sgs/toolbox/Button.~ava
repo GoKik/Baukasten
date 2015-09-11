@@ -23,9 +23,9 @@ public class Button extends GUIObject implements PConstants{
     name = n;
     width = b;
     height = h;
-    textSize = 15;
-    while (parent.textWidth(n) > b - 10) { 
-      textSize--;
+    textSize = 1;
+    while (parent.textWidth(n) < b - 20) { 
+      textSize++;
       parent.textSize(textSize);
     } // end of while
     style = 1;
@@ -41,7 +41,7 @@ public class Button extends GUIObject implements PConstants{
   public void setBackgroundColor(int c) {
     bgCol = c;
   }
-
+  
   
   public void setStyle(int i) {
     if (i == RECT || i == ROUND) {
@@ -54,34 +54,40 @@ public class Button extends GUIObject implements PConstants{
     parent.textAlign(CENTER, CENTER);
     parent.strokeWeight(2);
     parent.textSize(textSize);
-    if (pressed) {
-      parent.fill(col);
-      parent.stroke(bgCol);
-      drawBody(xPos, yPos, width, height);
-      parent.fill(bgCol);
-      parent.text(name, xPos + (width / 2), yPos + (height / 2));
-    } else if (hovered) {
-      parent.fill(col);
-      parent.stroke(col);
-      drawBody(xPos, yPos, width, height);
-      parent.fill(bgCol);
-      parent.text(name, xPos + (width / 2), yPos + (height / 2));
-    } else {
-      parent.fill(bgCol);
-      parent.stroke(col);
-      drawBody(xPos, yPos, width, height);
-      parent.fill(col);
-      parent.text(name, xPos + (width / 2), yPos + (height / 2));
-    }
-    
     if (disabled) {
-      parent.fill(disCol);
-      parent.stroke(disCol);
+      parent.fill(col); 
+      parent.noStroke();
+      //parent.stroke(col);
+      drawBody(xPos, yPos, width, height);
+      parent.fill(disCol);   
+      //parent.stroke(disCol);
       drawBody(xPos, yPos, width, height);
       parent.fill(255, 255, 255);
       parent.textAlign(CENTER, CENTER);
+      parent.textSize(width/6);
       parent.text("DISABLED", xPos + (width / 2), yPos + (height / 2));
-    }
+    } else {
+      if (pressed) {
+        parent.fill(col);
+        parent.stroke(bgCol);
+        drawBody(xPos, yPos, width, height);
+        parent.fill(bgCol);
+        parent.text(name, xPos + (width / 2), yPos + (height / 2));
+      } else if (hovered) {
+        parent.fill(col);
+        parent.stroke(col);
+        drawBody(xPos, yPos, width, height);
+        parent.fill(bgCol);
+        parent.text(name, xPos + (width / 2), yPos + (height / 2));
+      } else {
+        parent.fill(bgCol);
+        parent.stroke(col);
+        drawBody(xPos, yPos, width, height);
+        parent.fill(col);
+        parent.text(name, xPos + (width / 2), yPos + (height / 2));
+      }
+    } // end of if-else
+    
   }
   
   private void drawBody(int x, int y, int b, int h) {

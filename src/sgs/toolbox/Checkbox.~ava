@@ -49,6 +49,7 @@ public class Checkbox extends GUIObject implements PConstants {
       height = width;
     } else if (i == TOGGLE_BUTTON) {
       style = i;
+      width = height * 2;
     }
   }
   

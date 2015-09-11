@@ -25,10 +25,11 @@ public class StartToolbox extends PApplet{
     pencil.setBackgroundColor(color(240));
     pencil.snapToMouse(true);
     
-    btnClear = new Button(this, "Lösche", 20, 80, 60, 60);
+    btnClear = new Button(this, "Lösche", 20, 80, 80, 60);
     btnClear.setColor(color(255, 100, 100));
     btnClear.setBackgroundColor(color(255));
     btnClear.setStyle(Button.ROUND);
+    btnClear.disable();
     
     c1 = new Checkbox(this, "Test", 30, 240, false);
     c1.setStyle(Checkbox.CHECKBOX_ROUND);

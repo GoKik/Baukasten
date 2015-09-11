@@ -23,6 +23,7 @@ public class Slider extends GUIObject implements PConstants {
     startValue = 0;
     stopValue = 100;
     step = 1;
+    markerStep = 1;
     value = 0;
     style = 1;
     col = parent.color(0, 0, 0);
@@ -35,6 +36,18 @@ public class Slider extends GUIObject implements PConstants {
   
   public void setValue(float i) {
     value = i;
+    float min = startValue;
+    float max = stopValue;
+    if (startValue > stopValue) {
+      min = stopValue;
+      max = startValue;
+    }
+    if (value < min) {
+      value = min;
+    } // end of if
+    if (value > max) {
+      value = max;
+    } // end of if
     if (value % step != 0) {
       float s = value % step;
       if (s < step / 2) {
@@ -145,7 +158,12 @@ public class Slider extends GUIObject implements PConstants {
         return true;
       } // end of if
     } else if (!pressed && hovered && e.getAction() == MouseEvent.PRESS) {
-      pressed = true;
+      pressed = true;   
+      if (style == HORIZONTAL) {
+        value = getValueFromX(e.getX());
+      } else {
+        value = getValueFromY(e.getY());
+      } // end of if-else
       return true;
     } else if (pressed && e.getAction() == MouseEvent.RELEASE) {
       pressed = false;
@@ -158,24 +176,29 @@ public class Slider extends GUIObject implements PConstants {
         value = getValueFromY(e.getY());
       } // end of if-else
       return true;
-    }
+    } else if (hovered && e.getAction() == MouseEvent.WHEEL) {
+      setValue(value + (e.getCount() * step));
+    } // end of if-else
     return false;
   }
   
   private void mouseOver(int xT, int yT) {
-    int x, y;
+    
     if (style == HORIZONTAL) {
-      x = getXFromValue(value);
-      y = yPos;
+      if (xT > xPos - 10 && xT < xPos + width + 10 && yT > yPos - 10 && yT < yPos + 10) {
+        hovered = true;
+      } else {
+        hovered = false;
+      }
     } else {
-      y = getYFromValue(value);
-      x = xPos;
+      if (xT > xPos - 10 && xT < xPos + 10 && yT > yPos -10 && yT < yPos + width + 10) {
+        hovered = true;
+      } else {
+        hovered = false;
+      }
     } // end of if-else
-    if (PApplet.sqrt(PApplet.pow(xT - x, 2) + PApplet.pow(yT - y, 2)) < 8) {
-      hovered = true;
-    } else {
-      hovered = false;
-    }
+    
+    
   }
   
   
