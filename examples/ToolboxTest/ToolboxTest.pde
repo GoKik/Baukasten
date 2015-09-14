@@ -46,23 +46,23 @@ import toolbox.*;
     
     sR = new Slider(this, 40, 160, 300);
     sR.setColor(color(255, 100, 100));
-    sR.setMaxValue(255); 
+    sR.setStopValue(255); 
     sR.setBackgroundColor(color(100));
     
     sG = new Slider(this, 40, 190, 300);
     sG.setColor(color(255, 100, 100));
-    sG.setMaxValue(255);  
+    sG.setStopValue(255);  
     sG.setBackgroundColor(color(100));
     
     sB = new Slider(this, 40, 220, 300);
     sB.setColor(color(255, 100, 100));
-    sB.setMaxValue(255);  
+    sB.setStopValue(255);  
     sB.setBackgroundColor(color(100));
     
     sM = new Slider(this, 40, 360, 300);
     sM.setColor(color(255, 100, 100));
-    sM.setMaxValue(600);
-    sM.setMinValue(200);
+    sM.setStopValue(600);
+    sM.setStartValue(200);
     sM.setStep(20);
     sM.setMarkerStep(100);
     sM.showMarkers(true);
@@ -70,7 +70,7 @@ import toolbox.*;
     
     tBox = new Textbox(this, 50, 150, 200, 30);
     
-    tC = new TabContainer(this, 0, 0, 400, 480);
+    tC = new TabContainer(this, 0, 0, 400, 50);
     tC.setColor(color(255));
     tC.setBackgroundColor(color(70));
     
