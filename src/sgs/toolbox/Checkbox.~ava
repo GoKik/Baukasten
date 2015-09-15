@@ -16,18 +16,17 @@ public class Checkbox extends GUIObject implements PConstants {
   
   private String name;
   private int col, bgCol, disCol;
-  private int textSize, style, width, height;
+  private int textSize, style;
   private boolean hovered, pressed, checked, disabled;
   
   public Checkbox(PApplet p, String n, int x, int y, boolean c) {
-    super(p, x, y);
+    super(p, x, y, 30, 30);
     name = n;
     col = parent.color(0, 0, 0);
     bgCol = parent.color(255, 255, 255);
     disCol = parent.color(30, 30, 30, 150);
     style = CHECKBOX;
     textSize = 15;
-    width = height = 30;
     checked = c;
   }
   

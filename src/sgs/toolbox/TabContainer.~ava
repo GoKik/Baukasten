@@ -14,15 +14,13 @@ public class TabContainer extends GUIObject implements PConstants {
   private ArrayList<Tab> tabs;
   private ArrayList<String> tabNames;
   private int selectedTab = 0;
-  private int width, height, col, bgCol;
+  private int col, bgCol;
   private int hovered = -1, clicked = -1;
   
-  public TabContainer(PApplet p, int x, int y, int b, int h) {
-    super(p, x, y);
+  public TabContainer(PApplet p, int x, int y, int w, int h) {
+    super(p, x, y, w, h);
     tabs = new ArrayList<Tab>();
     tabNames = new ArrayList<String>();
-    width = b;
-    height = h;
   }
   
   public void setColor(int c) {
@@ -80,9 +78,23 @@ public class TabContainer extends GUIObject implements PConstants {
     } // end of for
     parent.rect(xPos + (selectedTab * 70), yPos + height - 2, 70, 2);
     
-    if (selectedTab < tabs.size()) {    
+    if (selectedTab < tabs.size()) {
       tabs.get(selectedTab).draw();
     } // end of if
+  }
+  
+  public void onResize(float xFactor, float yFactor) {
+    super.onResize(xFactor, yFactor);
+    for (int i = 0; i < tabs.size(); i++) {
+      tabs.get(i).onResize(xFactor, yFactor);
+    } // end of if
+  }
+  
+  public void setResizable(boolean x, boolean y, boolean w, boolean h, boolean p) {
+    super.setResizable(x, y, w, h, p); 
+    for (int i = 0; i < tabs.size(); i++) {
+      tabs.get(i).setResizable(x, y, w, h, p); 
+    } // end of for
   }
   
   public boolean mouseEvent(MouseEvent e) {
@@ -147,6 +159,18 @@ public class TabContainer extends GUIObject implements PConstants {
     public void draw() {
       for (int i = 0; i < objects.size() ; i++ ) {
         objects.get(i).draw();
+      } // end of for
+    }
+    
+    public void onResize(float xFactor, float yFactor) {
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).onResize(xFactor, yFactor);
+      } // end of for
+    }
+    
+    public void setResizable(boolean x, boolean y, boolean w, boolean h, boolean p) {
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).setResizable(x, y, w, h, p);
       } // end of for
     }
     

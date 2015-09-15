@@ -31,6 +31,18 @@ public class CheckboxGroup extends GUIObject implements PConstants {
     } // end of for
   }
   
+  public void onResize(float xFactor, float yFactor) {
+    for (int i = 0; i < boxes.size() ; i++ ) {
+      boxes.get(i).onResize(xFactor, yFactor);
+    } // end of for
+  }
+  
+  public void setResizable(boolean x, boolean y, boolean w, boolean h, boolean p) {
+    for (int i = 0; i < boxes.size() ; i++ ) {
+      boxes.get(i).setResizable(x, y, w, h, p);
+    } // end of for
+  }
+  
   public boolean mouseEvent(MouseEvent e) {
     int b = -1;
     for (int i = 0; i < boxes.size(); i++) {

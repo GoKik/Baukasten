@@ -15,16 +15,15 @@ public class Button extends GUIObject implements PConstants{
   
   private String name;
   private int col, bgCol, disCol;
-  private int width, height, textSize, style;
+  private int textSize, style;
   private boolean hovered, disabled, pressed, clicked;
   
-  public Button(PApplet p, String n, int x, int y, int b, int h) {
-    super(p, x, y);
+  public Button(PApplet p, String n, int x, int y, int w, int h) {
+    super(p, x, y, w, h);
     name = n;
-    width = b;
-    height = h;
     textSize = 1;
-    while (parent.textWidth(n) < b - 20) { 
+    parent.textSize(1);
+    while (parent.textWidth(n) < width - 20) { 
       textSize++;
       parent.textSize(textSize);
     } // end of while
@@ -48,6 +47,16 @@ public class Button extends GUIObject implements PConstants{
       style = i;
       height = width;
     }
+  }
+  
+  public void onResize(float xFactor, float yFactor) {
+    super.onResize(xFactor, yFactor);
+    textSize = 1;
+    parent.textSize(1);
+    while (parent.textWidth(name) < width - 20) { 
+      textSize++;
+      parent.textSize(textSize);
+    } // end of while
   }
   
   public void draw() {

@@ -13,20 +13,25 @@ public class Toolbox implements PConstants {
   
   public final static int JAVA_MODE = 1;
   public final static int ANDROID_MODE = 2;
-  private int mode;
+  private int mode, initWidth, initHeight, oldWidth, oldHeight;
+  private float propotion;
   private ArrayList<GUIObject> objects = new ArrayList<GUIObject>();
   
-  public Toolbox(PApplet parent, int m) {
+  public Toolbox(PApplet parent, int m, int w, int h) {
     this.parent = parent;
     if (m == JAVA_MODE || m == ANDROID_MODE) {
       mode = m;
     }
+    parent.registerMethod("pre", this);
     parent.registerMethod("draw", this);
     parent.registerMethod("mouseEvent", this);
     parent.registerMethod("keyEvent", this);
-    parent.registerMethod("pause", this);
-    parent.registerMethod("resume", this);
     parent.registerMethod("dispose", this);
+    parent.frame.setResizable(true);
+    parent.frame.setSize(w, h);
+    initWidth = parent.width;
+    initHeight = parent.height;
+    propotion = (float)initHeight / initWidth; 
   }
   
   public void add(GUIObject o) {
@@ -60,7 +65,19 @@ public class Toolbox implements PConstants {
     }
   }
   
-  public void mouseEvent(MouseEvent e) {
+  public void pre() {
+    if (parent.width != oldWidth || parent.height != oldHeight) {
+      float xFactor = (float)parent.width / initWidth;
+      float yFactor = (float)parent.height / initHeight;
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).onResize(xFactor, yFactor);
+      } // end of for     
+      oldWidth = parent.width;
+      oldHeight = parent.height;
+    } // end of if 
+  }
+  
+  public void mouseEvent(MouseEvent e) {  
     for (int i = 0; i < objects.size(); i++) {
       if (objects.get(i).mouseEvent(e)) {
         break;
@@ -76,14 +93,6 @@ public class Toolbox implements PConstants {
     for (int i = 0; i < objects.size(); i++) {
       objects.get(i).keyEvent(e);
     }
-  }
-  
-  public void pause() {
-    
-  }
-  
-  public void resume() {
-    
   }
   
   public void dispose() {

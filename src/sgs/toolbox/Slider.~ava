@@ -13,13 +13,12 @@ public class Slider extends GUIObject implements PConstants {
   public static final int HORIZONTAL = 1;
   public static final int VERTICAL = 2;
   
-  private int width, col, bgCol, style;
+  private int col, bgCol, style;
   private float startValue, stopValue, step, value, markerStep;
   private boolean showMarkers, hovered, pressed, changed;
   
   public Slider(PApplet p, int x, int y, int w) {
-    super(p, x, y);
-    width = w;
+    super(p, x, y, w, w);
     startValue = 0;
     stopValue = 100;
     step = 1;
@@ -98,7 +97,7 @@ public class Slider extends GUIObject implements PConstants {
     if (style == HORIZONTAL) {
       parent.line(xPos, yPos, xPos + width, yPos); 
     } else {
-      parent.line(xPos, yPos, xPos, yPos + width); 
+      parent.line(xPos, yPos, xPos, yPos + height); 
     } // end of if-else
     float min = startValue;
     float max = stopValue;
@@ -191,7 +190,7 @@ public class Slider extends GUIObject implements PConstants {
         hovered = false;
       }
     } else {
-      if (xT > xPos - 10 && xT < xPos + 10 && yT > yPos -10 && yT < yPos + width + 10) {
+      if (xT > xPos - 10 && xT < xPos + 10 && yT > yPos -10 && yT < yPos + height + 10) {
         hovered = true;
       } else {
         hovered = false;
@@ -219,7 +218,7 @@ public class Slider extends GUIObject implements PConstants {
   }  
   
   private int getYFromValue(float v) {
-    return (int)(yPos + ((float)width / (stopValue - startValue)) * (v - startValue));
+    return (int)(yPos + ((float)height / (stopValue - startValue)) * (v - startValue));
   }
   
   private float getValueFromX(float x) {
@@ -250,7 +249,7 @@ public class Slider extends GUIObject implements PConstants {
   }
   
   private float getValueFromY(int y) {
-    float v = (((float)(y - yPos) * (stopValue - startValue)) / (float)width) + startValue;
+    float v = (((float)(y - yPos) * (stopValue - startValue)) / (float)height) + startValue;
     float min = startValue;
     float max = stopValue;
     if (startValue > stopValue) {

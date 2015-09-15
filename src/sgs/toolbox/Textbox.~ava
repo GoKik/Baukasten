@@ -10,15 +10,13 @@ import java.util.ArrayList;
 
 public class Textbox extends GUIObject implements PConstants {
   
-  private int width, height, col, bgCol, hlCol;
+  private int col, bgCol, hlCol;
   private String content = "";
   private boolean hovered, pressed, focused, enterPressed;
   private int cursor = 0, startPos = 0;
   
-  public Textbox(PApplet p, int x, int y, int b, int h) {
-    super(p, x, y);
-    width = b;
-    height = h;
+  public Textbox(PApplet p, int x, int y, int w, int h) {
+    super(p, x, y, w, h);
     col = parent.color(0, 0, 0);
     bgCol = parent.color(230, 230, 230);
     hlCol = parent.color(255, 100, 100);
