@@ -44,8 +44,10 @@ public class Pencil extends GUIObject implements PConstants {
       } else if (e.getAction() == MouseEvent.DRAG && !isUp()) {
         moveTo(e.getX(), e.getY());
         return true;
-      } else if (inBounds(e.get{
-        
+      } else if (inBounds(e.getX(), e.getY())) {
+        return true;
+      } else {
+        return false;
       } // end of if-else
     } else {
       return false;

@@ -182,6 +182,10 @@ public class Textbox extends GUIObject implements PConstants {
     
   }
   
+  public String getContent() {
+    return content;
+  }
+  
   public void setColor(int c) {
     col = c;
   }

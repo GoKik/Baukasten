@@ -18,6 +18,10 @@ public class Toolbox implements PConstants {
   private ArrayList<GUIObject> objects = new ArrayList<GUIObject>();
   
   public Toolbox(PApplet parent, int m, int w, int h) {
+    this(parent, m, w, h, false);
+  }
+  
+  public Toolbox(PApplet parent, int m, int w, int h, boolean r) {
     this.parent = parent;
     if (m == JAVA_MODE || m == ANDROID_MODE) {
       mode = m;
@@ -27,7 +31,7 @@ public class Toolbox implements PConstants {
     parent.registerMethod("mouseEvent", this);
     parent.registerMethod("keyEvent", this);
     parent.registerMethod("dispose", this);
-    parent.frame.setResizable(true);
+    parent.frame.setResizable(r);
     parent.frame.setSize(w, h);
     initWidth = parent.width;
     initHeight = parent.height;
