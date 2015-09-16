@@ -185,12 +185,9 @@ public class StartToolbox extends PApplet {
   
   public void draw() {
     
-    background(0);
-    
     if (btnClear.wasPressed()) {
       pencil.clearDrawing();
     }
-    
     
     pencil.setColor(color(sR.getValue(), sG.getValue(), sB.getValue()));
     

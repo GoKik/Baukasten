@@ -1,5 +1,7 @@
 import toolbox.*;
 
+  PImage fish;
+
   Toolbox toolbox;
   Pencil pencil;
   Button btnClear, btnRect;
@@ -12,6 +14,9 @@ import toolbox.*;
   public void setup() {
     
     toolbox = new Toolbox(this, Toolbox.JAVA_MODE, 800, 480, true);
+    
+    fish = loadImage("bigFish.png");
+    fish.resize(width, height);
     
     pencil = new Pencil(this, width/2, 0, width/2, height);
     pencil.setBackgroundColor(color(240));
@@ -158,7 +163,6 @@ import toolbox.*;
     
     sV.setResizable(true, false);
     
-    
     oc2.setOnDrawListener(new OnDrawListener() {
       public void draw(int x, int y, int w, int h) {
         fill(255);
@@ -177,12 +181,20 @@ import toolbox.*;
   }
   
   public void draw() {
-    background(0);
     
     if (btnClear.wasPressed()) {
       pencil.clearDrawing();
     }
     
-    
+    imageMode(CORNER);
+    translate(width/2, 0);
+    rotate(PI/5);
+    if (millis() < 4000) {
+      image(fish, (width*0.7) - ((0.7*width/4000)*millis()), 0);
+    } else {
+      image(fish, 0, 0);
+    }
+    rotate(-PI/5);
+    translate(-width/2, 0);
     pencil.setColor(color(sR.getValue(), sG.getValue(), sB.getValue()));
   }

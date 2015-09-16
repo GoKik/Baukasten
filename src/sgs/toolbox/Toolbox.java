@@ -68,6 +68,7 @@ public class Toolbox implements PConstants {
     for (int i = 0; i < objects.size(); i++) {
       objects.get(i).draw();
     }
+    parent.draw();
   }
   
   public void pre() {
