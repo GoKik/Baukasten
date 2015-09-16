@@ -11,7 +11,7 @@ import toolbox.*;
   
   public void setup() {
     
-    toolbox = new Toolbox(this, Toolbox.JAVA_MODE, 800, 480);
+    toolbox = new Toolbox(this, Toolbox.JAVA_MODE, 800, 480, true);
     
     pencil = new Pencil(this, width/2, 0, width/2, height);
     pencil.setBackgroundColor(color(240));
