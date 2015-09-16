@@ -16,6 +16,15 @@ public class TabContainer extends GUIObject implements PConstants {
   private int selectedTab = 0;
   private int col, bgCol;
   private int hovered = -1, clicked = -1;
+  private TabDrawer tabDrawer;
+  
+  public void setTabDrawer(TabDrawer t) {
+    tabDrawer = t;
+  }
+  
+  public interface TabDrawer {
+    public void drawTab(int i, int x, int y, int w, int h);
+  }
   
   public TabContainer(PApplet p, int x, int y, int w, int h) {
     super(p, x, y, w, h);
@@ -77,7 +86,9 @@ public class TabContainer extends GUIObject implements PConstants {
       parent.text(tabNames.get(i), xPos + (i * 70), yPos, 70, height); 
     } // end of for
     parent.rect(xPos + (selectedTab * 70), yPos + height - 2, 70, 2);
-    
+    if (tabDrawer != null) {                 
+      tabDrawer.drawTab(selectedTab, xPos, yPos, width, height);
+    }
     if (selectedTab < tabs.size()) {
       tabs.get(selectedTab).draw();
     } // end of if

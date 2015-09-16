@@ -5,7 +5,7 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
-public class StartToolbox extends PApplet{
+public class StartToolbox extends PApplet {
   
   Toolbox toolbox;
   Pencil pencil;
@@ -25,7 +25,7 @@ public class StartToolbox extends PApplet{
     pencil = new Pencil(this, width/2, 0, width/2, height);
     pencil.setBackgroundColor(color(240));
     pencil.snapToMouse(true);
-    pencil.setResizable(false, false, true, true, true);
+    pencil.setResizable(false, false, true, true, false);
     
     btnClear = new Button(this, "Lösche", 20, 80, 80, 80);
     btnClear.setColor(color(255, 100, 100));
@@ -115,9 +115,10 @@ public class StartToolbox extends PApplet{
     
     tBox = new Textbox(this, 50, 150, 200, 30);
     
-    tC = new TabContainer(this, 0, 0, 400, 40);
+    tC = new TabContainer(this, 0, 0, 400, height, 40);
     tC.setColor(color(255));
-    tC.setBackgroundColor(color(70));
+    tC.setBackgroundColor(color(100));
+    tC.setMenuColor(color(70));
     
     tC.newTab("Colors");
     tC.addObject("Colors", sR);
@@ -135,7 +136,22 @@ public class StartToolbox extends PApplet{
     tC.addObject("Text", tBox);
     tC.addObject("Text", sV); 
     
-    tC.setResizable(false);
+    tC.setResizable(false, true, false);
+    btnClear.setResizable(false);
+    cG1.setResizable(false);
+    cG2.setResizable(false);
+    cG3.setResizable(false);
+    
+    
+    tC.setTabDrawer(new TabContainer.TabDrawer() {
+      public void drawTab(int t, int x, int y, int w, int h) {
+        fill(255);
+        textSize(12);
+        if (t == 0) {
+          text(sM.getValue(), x + (int)(0.8 * w), y + (int)(0.8 * h));
+        } // end of if
+      }
+    });
     
     sV.setResizable(false, false, false, true, false);
     
@@ -152,9 +168,6 @@ public class StartToolbox extends PApplet{
       pencil.clearDrawing();
     }
     
-    if (tC.getSelectedTab() == 0) {
-      text(sM.getValue(), 370, 360);
-    } // end of if
     
     pencil.setColor(color(sR.getValue(), sG.getValue(), sB.getValue()));
     
