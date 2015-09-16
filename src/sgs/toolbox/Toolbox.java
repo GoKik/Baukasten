@@ -13,8 +13,9 @@ public class Toolbox implements PConstants {
   
   public final static int JAVA_MODE = 1;
   public final static int ANDROID_MODE = 2;
-  private int mode, initWidth, initHeight, oldWidth, oldHeight;
+  private int mode, oldWidth, oldHeight, initWidth, initHeight;
   private float propotion;
+  private long resizeMillis = 0;
   private ArrayList<GUIObject> objects = new ArrayList<GUIObject>();
   
   public Toolbox(PApplet parent, int m, int w, int h) {
@@ -33,9 +34,9 @@ public class Toolbox implements PConstants {
     parent.registerMethod("dispose", this);
     parent.frame.setResizable(r);
     parent.frame.setSize(w, h);
-    initWidth = parent.width;
-    initHeight = parent.height;
-    propotion = (float)initHeight / initWidth; 
+    oldWidth = initWidth = parent.width;
+    oldHeight = initHeight = parent.height;
+    propotion = (float)oldHeight / oldWidth; 
   }
   
   public void add(GUIObject o) {
@@ -46,7 +47,7 @@ public class Toolbox implements PConstants {
     objects.clear();
   }
   
-  public void setToBack(GUIObject o) {
+  public void sendToFront(GUIObject o) {
     int i = objects.indexOf(o);
     if (i != -1) {
       objects.remove(i);
@@ -54,7 +55,7 @@ public class Toolbox implements PConstants {
     } // end of if
   }
   
-  public void setToFront(GUIObject o) {
+  public void sendToBack(GUIObject o) {
     int i = objects.indexOf(o);
     if (i != -1) {
       objects.remove(i);
@@ -70,19 +71,31 @@ public class Toolbox implements PConstants {
   }
   
   public void pre() {
-    if (parent.width != oldWidth || parent.height != oldHeight) {
+    int pW = parent.width;
+    int pH = parent.height;
+    if (pW != oldWidth || pH != oldHeight) {
+      resizeMillis = parent.millis();
+    }
+    if (resizeMillis + 1000 > parent.millis()) {
       float xFactor = (float)parent.width / initWidth;
       float yFactor = (float)parent.height / initHeight;
       for (int i = 0; i < objects.size() ; i++ ) {
         objects.get(i).onResize(xFactor, yFactor);
-      } // end of for     
-      oldWidth = parent.width;
-      oldHeight = parent.height;
-    } // end of if 
+      } // end of for   
+    } else if (initWidth != oldWidth) {
+      initWidth = oldWidth;
+      initHeight = oldHeight;
+      for (int i = 0; i < objects.size() ; i++ ) {
+        objects.get(i).onFixSize();
+      } // end of for  
+    } // end of if-else
+    
+    oldWidth = pW;
+    oldHeight = pH;
   }
   
   public void mouseEvent(MouseEvent e) {  
-    for (int i = 0; i < objects.size(); i++) {
+    for (int i = objects.size() - 1; i >= 0; i--) {
       if (objects.get(i).mouseEvent(e)) {
         break;
       }
@@ -94,7 +107,7 @@ public class Toolbox implements PConstants {
   }  
   
   public void keyEvent(KeyEvent e) {
-    for (int i = 0; i < objects.size(); i++) {
+    for (int i = objects.size() - 1; i >= 0; i--) {
       objects.get(i).keyEvent(e);
     }
   }

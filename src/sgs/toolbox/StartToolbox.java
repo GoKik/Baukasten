@@ -16,11 +16,9 @@ public class StartToolbox extends PApplet {
   Textbox tBox;
   TabContainer tC;
   
-  int w = 0, h = 0;
-  
   public void setup() {
     
-    toolbox = new Toolbox(this, Toolbox.JAVA_MODE, 800, 480);
+    toolbox = new Toolbox(this, Toolbox.JAVA_MODE, 800, 480, true);
     
     pencil = new Pencil(this, width/2, 0, width/2, height);
     pencil.setBackgroundColor(color(240));
@@ -83,23 +81,23 @@ public class StartToolbox extends PApplet {
     cG3.add(c32);      
     cG3.add(c33);
     
-    sR = new Slider(this, 40, 120, 300);
+    sR = new Slider(this, 40, 50, 300);
     sR.setColor(color(255, 100, 100));
     sR.setStopValue(0); 
     sR.setStartValue(255);
     sR.setBackgroundColor(color(100));
     
-    sG = new Slider(this, 40, 150, 300);
+    sG = new Slider(this, 40, 100, 300);
     sG.setColor(color(255, 100, 100));
     sG.setStopValue(255);  
     sG.setBackgroundColor(color(100));
     
-    sB = new Slider(this, 40, 180, 300);
+    sB = new Slider(this, 40, 150, 300);
     sB.setColor(color(255, 100, 100));
     sB.setStopValue(255);  
     sB.setBackgroundColor(color(100));
     
-    sM = new Slider(this, 40, 360, 300);
+    sM = new Slider(this, 40, 100, 300);
     sM.setColor(color(255, 100, 100));
     sM.setStopValue(0.6f);
     sM.setStartValue(0.1f);
@@ -108,12 +106,35 @@ public class StartToolbox extends PApplet {
     sM.showMarkers(true);
     sM.setBackgroundColor(color(100));
     
-    sV = new Slider(this, 370, 80, 370);
+    sV = new Slider(this, 370, 30, 370);
     sV.setColor(color(255, 100, 100));
-    sV.setStyle(Slider.VERTICAL);
+    sV.setStyle(Slider.VERTICAL); 
     sV.setBackgroundColor(color(100));
     
+    
     tBox = new Textbox(this, 50, 150, 200, 30);
+    
+    
+    Sizer sz = new Sizer(this, 400, 0, height, false);
+    sz.setMinX(200);
+    sz.setMaxX(500);
+    sz.setColor(color(240));
+    
+    Sizer sH = new Sizer(this, 0, 200, 400, true);
+    sH.setMinY(150);
+    sH.setMaxY(300);
+    sH.setColor(color(90));
+    
+    ObjectContainer oc1 = new ObjectContainer(this, 0, 0, 400, 200);
+    ObjectContainer oc2 = new ObjectContainer(this, 0, 200, 400, 280);
+    
+    oc1.add(sR);
+    oc1.add(sG);
+    oc1.add(sB);
+    oc2.add(sM);
+    
+    oc1.addSizer(sH, false, true);
+    oc2.addSizer(sH, true, false);
     
     tC = new TabContainer(this, 0, 0, 400, height, 40);
     tC.setColor(color(255));
@@ -121,10 +142,9 @@ public class StartToolbox extends PApplet {
     tC.setMenuColor(color(70));
     
     tC.newTab("Colors");
-    tC.addObject("Colors", sR);
-    tC.addObject("Colors", sG);
-    tC.addObject("Colors", sB);
-    tC.addObject("Colors", sM);
+    tC.addObject("Colors", oc1);
+    tC.addObject("Colors", oc2);
+    tC.addObject("Colors", sH);
     
     tC.newTab("Buttons");
     tC.addObject("Buttons", btnClear);
@@ -137,32 +157,35 @@ public class StartToolbox extends PApplet {
     tC.addObject("Text", sV); 
     
     tC.setResizable(false, true, false);
+    sz.setResizable(false, true, false);
     btnClear.setResizable(false);
     cG1.setResizable(false);
     cG2.setResizable(false);
     cG3.setResizable(false);
     
+    sV.setResizable(true, false);
     
-    tC.setTabDrawer(new TabContainer.TabDrawer() {
-      public void drawTab(int t, int x, int y, int w, int h) {
+    
+    oc2.setOnDrawListener(new OnDrawListener() {
+      public void draw(int x, int y, int w, int h) {
         fill(255);
         textSize(12);
-        if (t == 0) {
-          text(sM.getValue(), x + (int)(0.8 * w), y + (int)(0.8 * h));
-        } // end of if
+        //if (tC.getSelectedTab() == 0) {
+          text(sM.getValue(), x + (int)(0.8*w), y + (int)(0.5*h));
+        //} // end of if
       }
     });
     
-    sV.setResizable(false, false, false, true, false);
-    
-    toolbox.add(tC);
-    toolbox.add(pencil); 
-    frame.setLocation(100, 100);
+    toolbox.add(tC);  
+    toolbox.add(pencil);   
+    toolbox.add(sz);  
+    tC.addSizer(sz, false, true);
+    pencil.addSizer(sz, true, false);
   }
   
   public void draw() {
     
-    background(100);
+    background(0);
     
     if (btnClear.wasPressed()) {
       pencil.clearDrawing();

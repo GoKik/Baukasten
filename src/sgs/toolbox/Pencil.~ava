@@ -8,10 +8,10 @@ import processing.data.*;
 import processing.awt.*;
 import java.util.ArrayList;
 
-public class Pencil extends GUIObject implements PConstants {
+public class Pencil extends GUIContainer implements PConstants {
   
-  private boolean isDown, fillBG, snapToM;
-  private int oldX, oldY, penX, penY, initW, initH;
+  private boolean isDown, fillBG, snapToM, keepDProps = true;
+  private int oldPX, oldPY, penX, penY, oldW, oldH;
   private float angle = 0;
   private ArrayList<Line> drawing = new ArrayList<Line>();
   private int col, bgCol;
@@ -22,12 +22,16 @@ public class Pencil extends GUIObject implements PConstants {
     col = parent.color(0, 0, 0);
     penX = x;
     penY = y;
-    initW = w;
-    initH = h;
+    oldW = w;
+    oldH = h;
   }
   
   public void snapToMouse(boolean s) {
     snapToM = s;
+  }
+  
+  public void keepDrawingPropotions(boolean p) {
+    keepDProps = p;
   }
   
   public boolean mouseEvent(MouseEvent e) {
@@ -38,7 +42,7 @@ public class Pencil extends GUIObject implements PConstants {
           down();
         } 
         return true;
-      } else if (e.getAction() == MouseEvent.RELEASE) {
+      } else if (e.getAction() == MouseEvent.RELEASE && !isUp()) {
         up();
         return true;
       } else if (e.getAction() == MouseEvent.DRAG && !isUp()) {
@@ -64,10 +68,24 @@ public class Pencil extends GUIObject implements PConstants {
   
   public void onResize(float xFactor, float yFactor) {
     super.onResize(xFactor, yFactor);
-    float widthFactor = (float)width / initW;
-    float heightFactor = (float)height / initH; 
+    onChildResize();
+  }
+  
+  public void onChildResize() {
+    super.onChildResize();
+    float widthFactor = (float)width / oldW;
+    float heightFactor = (float)height / oldH; 
     for (int i = 0; i < drawing.size(); i++) {
-      drawing.get(i).onResize(widthFactor, heightFactor);
+      drawing.get(i).onResize(keepDProps?heightFactor:widthFactor, heightFactor);
+    } // end of if
+  }
+  
+  public void onFixSize() {
+    super.onFixSize();
+    oldW = width;
+    oldH = height; 
+    for (int i = 0; i < drawing.size(); i++) {
+      drawing.get(i).onFixSize();
     } // end of if
   }
   
@@ -93,84 +111,84 @@ public class Pencil extends GUIObject implements PConstants {
   }
   
   public void moveTo(int x, int y) {
-    oldX = penX;
-    oldY = penY;
+    oldPX = penX;
+    oldPY = penY;
     penX = x;
     penY = y;
     if (isDown && checkBorders()) {
-      drawing.add(new Line(oldX - xPos, oldY - yPos, penX - xPos, penY - yPos));   
+      drawing.add(new Line(oldPX - xPos, oldPY - yPos, penX - xPos, penY - yPos));   
     }
   }
   
   private boolean checkBorders() {
     float xNew, yNew;
     if ((penX <= xPos || penX >= xPos + width || penY <= yPos || penY >= yPos + height)
-    && (oldX <= xPos || oldX >= xPos + width || oldY <= yPos || oldY >= yPos + height)) {
+    && (oldPX <= xPos || oldPX >= xPos + width || oldPY <= yPos || oldPY >= yPos + height)) {
       return false; 
     }
-    if (!(penX < xPos && oldX < xPos)) {
+    if (!(penX < xPos && oldPX < xPos)) {
       if (penX < xPos) {
-        yNew = (parent.parseFloat(xPos - oldX) / parent.parseFloat(penX - oldX)) * (penY - oldY) + oldY;
+        yNew = (parent.parseFloat(xPos - oldPX) / parent.parseFloat(penX - oldPX)) * (penY - oldPY) + oldPY;
         xNew = xPos;
         penX = (int)xNew;
         penY = (int)yNew;
         return true;
-      } else if (oldX < xPos) {
-        yNew = (parent.parseFloat(xPos - penX) / parent.parseFloat(oldX - penX)) * (oldY - penY) + penY;
+      } else if (oldPX < xPos) {
+        yNew = (parent.parseFloat(xPos - penX) / parent.parseFloat(oldPX - penX)) * (oldPY - penY) + penY;
         xNew = xPos;
-        oldX = (int)xNew;
-        oldY = (int)yNew;
+        oldPX = (int)xNew;
+        oldPY = (int)yNew;
         return true;
       }
     } else {
       return false; 
     }  
-    if (!(penX > xPos + width && oldX > xPos + width)) {
+    if (!(penX > xPos + width && oldPX > xPos + width)) {
       if (penX > xPos + width) {
-        yNew = (parent.parseFloat(xPos + width - oldX) / parent.parseFloat(penX - oldX)) * (penY - oldY) + oldY; 
+        yNew = (parent.parseFloat(xPos + width - oldPX) / parent.parseFloat(penX - oldPX)) * (penY - oldPY) + oldPY; 
         xNew = xPos + width;
         penX = (int)xNew;
         penY = (int)yNew;
         return true;
-      } else if (oldX > xPos + width) {
-        yNew = (parent.parseFloat(xPos + width - penX) / parent.parseFloat(oldX - penX)) * (oldY - penY) + penY; 
+      } else if (oldPX > xPos + width) {
+        yNew = (parent.parseFloat(xPos + width - penX) / parent.parseFloat(oldPX - penX)) * (oldPY - penY) + penY; 
         xNew = xPos + width;
-        oldX = (int)xNew;
-        oldY = (int)yNew;
+        oldPX = (int)xNew;
+        oldPY = (int)yNew;
         return true;
       } 
     } else {
       return false;
     }
-    if (!(penY < yPos && oldY < yPos)) {
+    if (!(penY < yPos && oldPY < yPos)) {
       if (penY < yPos) {
-        xNew = (parent.parseFloat(yPos - oldY) / (penY - oldY)) * (penX - oldX) + oldX;
+        xNew = (parent.parseFloat(yPos - oldPY) / (penY - oldPY)) * (penX - oldPX) + oldPX;
         yNew = yPos;
         penX = (int)xNew;
         penY = (int)yNew;
         return true;
-      } else if (oldY < yPos) {
-        xNew = (parent.parseFloat(yPos - penY) / (oldY - penY)) * (oldX - penX) + penX;
+      } else if (oldPY < yPos) {
+        xNew = (parent.parseFloat(yPos - penY) / (oldPY - penY)) * (oldPX - penX) + penX;
         yNew = yPos;
-        oldX = (int)xNew;
-        oldY = (int)yNew;
+        oldPX = (int)xNew;
+        oldPY = (int)yNew;
         return true;
       } 
     } else {
       return false;
     }
-    if (!(penY > yPos + height && oldY > yPos + height)) {
+    if (!(penY > yPos + height && oldPY > yPos + height)) {
       if (penY > yPos + height) {
-        xNew = (parent.parseFloat(yPos + height - oldY) / (penY - oldY)) * (penX - oldX) + oldX;
+        xNew = (parent.parseFloat(yPos + height - oldPY) / (penY - oldPY)) * (penX - oldPX) + oldPX;
         yNew = yPos + height;
         penX = (int)xNew;
         penY = (int)yNew;
         return true;
-      } else if (oldY > yPos + height) {
-        xNew = (parent.parseFloat(yPos + height - penY) / (oldY - penY)) * (oldX - penX) + penX;
+      } else if (oldPY > yPos + height) {
+        xNew = (parent.parseFloat(yPos + height - penY) / (oldPY - penY)) * (oldPX - penX) + penX;
         yNew = yPos + height;
-        oldX = (int)xNew;
-        oldY = (int)yNew;
+        oldPX = (int)xNew;
+        oldPY = (int)yNew;
         return true;
       } 
     } else {
@@ -225,33 +243,32 @@ public class Pencil extends GUIObject implements PConstants {
   
   private class Line {
     
-    private int x1, y1, x2, y2, initX, initX2, initY, initY2;
-    private float flipFactorY = 0;
-    private float flipFactorX = 0;
+    private int x1, y1, x2, y2, oldX, oldX2, oldY, oldY2;
     
     public Line(int xa, int ya, int xb, int yb) {
       x1 = xa;
       y1 = ya;
       x2 = xb;
       y2 = yb;
-      initY = y1;
-      initY2 = y2;
-      initX = x1;
-      initX2 = x2;
+      oldY = y1;
+      oldY2 = y2;
+      oldX = x1;
+      oldX2 = x2;
     }
     
-    public void onResize(float xFactor, float yFactor) {
-      if (flipFactorX == 0) {
-        flipFactorX = 1 / xFactor;
-      } // end of if
-      if (flipFactorY == 0) {
-        flipFactorY = 1 / yFactor;
-      } // end of if                
-      x1 = (int)(initX * xFactor * flipFactorX);
-      x2 = (int)(initX2 * xFactor * flipFactorX); 
+    public void onResize(float xFactor, float yFactor) {        
+      x1 = (int)(oldX * xFactor);
+      x2 = (int)(oldX2 * xFactor); 
       
-      y1 = (int)(initY * yFactor * flipFactorY);
-      y2 = (int)(initY2 * yFactor * flipFactorY); 
+      y1 = (int)(oldY * yFactor);
+      y2 = (int)(oldY2 * yFactor); 
+    }
+    
+    public void onFixSize() {
+      oldY = y1;
+      oldY2 = y2;
+      oldX = x1;
+      oldX2 = x2;
     }
     
     public void draw(int x, int y) {

@@ -9,19 +9,19 @@ import processing.awt.*;
 import java.util.ArrayList;
 
 public abstract class GUIObject implements PConstants {
-  protected int xPos, yPos, initX, initY, width, height, initX2, initY2;
+  protected int xPos, yPos, oldX, oldY, width, height, oldX2, oldY2;
   protected PApplet parent;
   protected boolean resizable[] = {true, true, true, true};
-  protected boolean keepPropotions = true;
+  protected boolean keepPropotions = false;
   protected float propotion;
   
   
   public GUIObject(PApplet p, int x, int y, int w, int h) {
     parent = p;
-    xPos = initX = x;
-    yPos = initY = y;
-    initX2 = xPos + w;
-    initY2 = yPos + h;
+    xPos = oldX = x;
+    yPos = oldY = y;
+    oldX2 = xPos + w;
+    oldY2 = yPos + h;
     width = w;
     height = h;
     propotion = (float)w / h;
@@ -29,8 +29,8 @@ public abstract class GUIObject implements PConstants {
   
   public GUIObject(PApplet p, int x, int y) {
     parent = p;
-    xPos = initX = x;
-    yPos = initY = y;
+    xPos = oldX = x;
+    yPos = oldY = y;
   }
   
   public abstract void draw();
@@ -39,13 +39,13 @@ public abstract class GUIObject implements PConstants {
   
   public void onResize(float xFactor, float yFactor) {
     if (resizable[0]) {
-      xPos = (int)(initX * xFactor);
+      xPos = (int)(oldX * xFactor);
     } // end of if     
     if (resizable[1]) {
-      yPos = (int)(initY * yFactor);
+      yPos = (int)(oldY * yFactor);
     } // end of if
     if (resizable[2]) {
-      width = (int)(initX2 * xFactor) - xPos;
+      width = (int)(oldX2 * xFactor) - xPos;
       if (width < 0) {
         width = 0;
       } // end of if
@@ -59,7 +59,7 @@ public abstract class GUIObject implements PConstants {
             width = (int)(height * propotion);   
           } // end of if
         } else {
-          height = (int)(initY2 * yFactor) - yPos;
+          height = (int)(oldY2 * yFactor) - yPos;
           width = (int)(height * propotion);   
           if (xPos + width > parent.width) {
             width = parent.width - xPos; 
@@ -67,12 +67,19 @@ public abstract class GUIObject implements PConstants {
           } // end of if
         } // end of if-else
       } else {
-        height = (int)(initY2 * yFactor) - yPos;
+        height = (int)(oldY2 * yFactor) - yPos;
       } // end of if-else
       if (height < 0) {
         height = 0;
       } // end of if
     } // end of if
+  }
+  
+  public void onFixSize() {
+    oldX = xPos;
+    oldX2 = xPos + width;
+    oldY = yPos;
+    oldY2 = yPos + height;
   }
   
   public void setResizable(boolean r) {

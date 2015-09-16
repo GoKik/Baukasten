@@ -122,6 +122,13 @@ public class Textbox extends GUIObject implements PConstants {
     return false;
   }
   
+  public void onResize(float xFactor, float yFactor) {
+    super.onResize(xFactor, yFactor);
+    while (parent.textWidth(content.substring(startPos, cursor)) > width - 30) {  
+      startPos++;
+    } // end of if
+  }
+  
   private void mouseOver(int x, int y) {
     if (x > xPos && x < xPos + width && y > yPos && y < yPos + height) {
       parent.cursor(TEXT);
@@ -180,6 +187,10 @@ public class Textbox extends GUIObject implements PConstants {
       parent.line(x, yPos + 5, x, yPos + height - 5);
     } // end of if
     
+  }
+  
+  public String getContent() {
+    return content;
   }
   
   public void setColor(int c) {
