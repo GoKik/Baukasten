@@ -97,14 +97,14 @@ public class StartToolbox extends PApplet {
     sB.setStopValue(255);  
     sB.setBackgroundColor(color(100));
     
-    sM = new Slider(this, 40, 100, 300);
+    sM = new Slider(this, 100, 100, 40);
     sM.setColor(color(255, 100, 100));
-    sM.setStopValue(0.6f);
-    sM.setStartValue(0.1f);
-    sM.setStep(0.1f);
-    sM.setMarkerStep(0.1f);
+    sM.setStopValue(200);
+    sM.setStep(1);
+    sM.setMarkerStep(50);
     sM.showMarkers(true);
     sM.setBackgroundColor(color(100));
+    sM.setStyle(Slider.CIRCLE);
     
     sV = new Slider(this, 370, 30, 370);
     sV.setColor(color(255, 100, 100));
