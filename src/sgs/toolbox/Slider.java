@@ -12,6 +12,7 @@ public class Slider extends GUIObject implements PConstants {
   
   public static final int HORIZONTAL = 1;
   public static final int VERTICAL = 2;
+  public static final int CIRCLE = 3;
   
   private int col, bgCol, style;
   private float startValue, stopValue, step, value, markerStep;
@@ -66,7 +67,7 @@ public class Slider extends GUIObject implements PConstants {
   }
   
   public void setStyle(int i) {
-    if (i == HORIZONTAL || i == VERTICAL) {
+    if (i == HORIZONTAL || i == VERTICAL || i == CIRCLE) {
       style = i;
     } // end of if
   }
@@ -96,9 +97,12 @@ public class Slider extends GUIObject implements PConstants {
     parent.stroke(col);
     if (style == HORIZONTAL) {
       parent.line(xPos, yPos, xPos + width, yPos); 
-    } else {
+    } else if (style == VERTICAL) {
       parent.line(xPos, yPos, xPos, yPos + height); 
-    } // end of if-else
+    } else if (style == CIRCLE) {
+      parent.ellipseMode(CENTER);
+      parent.ellipse(xPos,yPos, width*2, width*2);
+    }
     float min = startValue;
     float max = stopValue;
     if (startValue > stopValue) {
@@ -111,167 +115,214 @@ public class Slider extends GUIObject implements PConstants {
       for (float i = p; i <= max; i += markerStep ) {
         if (style == HORIZONTAL) {
           parent.line(getXFromValue(i), yPos - 10, getXFromValue(i), yPos + 10);
-        } else {
+        } else if (style == VERTICAL) {
           parent.line(xPos - 10, getYFromValue(i), xPos + 10, getYFromValue(i)); 
-        } // end of if-else
-      } // end of for
-    } // end of if
-    
-    parent.fill(col);
-    parent.ellipseMode(CENTER);
-    parent.stroke(bgCol);
-    int x, y;
-    if (style == HORIZONTAL) {
-      x = getXFromValue(value);
-      y = yPos;
-    } else {
-      y = getYFromValue(value);
-      x = xPos;
-    } // end of if-else
-    
-    if (pressed) {
-      parent.ellipse(x, y, 18, 18);
-    } else if (hovered) {
-      parent.ellipse(x, y, 20, 20);
-    } else {   
-      parent.ellipse(x, y, 16, 16);
-    } // end of if-else  
-  }
-  
-  public void setMarkerStep(float s) {
-    markerStep = s;
-  }
-  
-  public void setStep(float s) {
-    step = s;
-  }
-  
-  public void showMarkers(boolean b) {
-    showMarkers = b;
-  }
-  
-  public boolean mouseEvent(MouseEvent e) {
-    if (e.getAction() == MouseEvent.MOVE) {
-      mouseOver(e.getX(), e.getY());
-      if (hovered) {
-        return true;
+        } else if (style == CIRCLE) {
+          float a = i/(max-min)*360;
+          int dx = 10*parent.cos(parent.radians(a)); 
+          int dy = 10*parent.sin(parent.radians(a));
+          int x = getCoordinates(xPos, yPos, width, a, true);
+          int y = getCoordinates(xPos, yPos, width, a, false);
+          parent.line(x - dx, y - dy, x + dx, y + dy);
+        } // end of for
       } // end of if
-    } else if (!pressed && hovered && e.getAction() == MouseEvent.PRESS) {
-      pressed = true;   
+      
+      parent.fill(col);
+      parent.ellipseMode(CENTER);
+      parent.stroke(bgCol);
+      int x, y;
       if (style == HORIZONTAL) {
-        value = getValueFromX(e.getX());
-      } else {
-        value = getValueFromY(e.getY());
-      } // end of if-else
-      return true;
-    } else if (pressed && e.getAction() == MouseEvent.RELEASE) {
-      pressed = false;
-      changed = true;
-      return true;
-    } else if (pressed && e.getAction() == MouseEvent.DRAG) {
-      if (style == HORIZONTAL) {
-        value = getValueFromX(e.getX());
-      } else {
-        value = getValueFromY(e.getY());
-      } // end of if-else
-      return true;
-    } else if (hovered && e.getAction() == MouseEvent.WHEEL) {
-      setValue(value + (e.getCount() * step));
-    } // end of if-else
-    return false;
-  }
-  
-  private void mouseOver(int xT, int yT) {
+        x = getXFromValue(value);
+        y = yPos;
+      } else if (style == VERTICAL){
+        y = getYFromValue(value);
+        x = xPos;
+      } else if (style == CIRCLE) {
+        float a = value/(max-min)*360;
+        x = getCoordinates(xPos, yPos, width, a, true);
+      y = getCoordinates(xPos, yPos, width, a, false); }
+      
+      if (pressed) {
+        parent.ellipse(x, y, 18, 18);
+      } else if (hovered) {
+        parent.ellipse(x, y, 20, 20);
+      } else {   
+        parent.ellipse(x, y, 16, 16);
+      } // end of if-else  
+    }
     
-    if (style == HORIZONTAL) {
-      if (xT > xPos - 10 && xT < xPos + width + 10 && yT > yPos - 10 && yT < yPos + 10) {
-        hovered = true;
-      } else {
-        hovered = false;
+    public void setMarkerStep(float s) {
+      markerStep = s;
+    }
+    
+    public void setStep(float s) {
+      step = s;
+    }
+    
+    public void showMarkers(boolean b) {
+      showMarkers = b;
+    }
+    
+    public boolean mouseEvent(MouseEvent e) {
+      float min = startValue;
+      float max = stopValue;
+      if (startValue > stopValue) {
+        min = stopValue;
+        max = startValue;
       }
-    } else {
-      if (xT > xPos - 10 && xT < xPos + 10 && yT > yPos -10 && yT < yPos + height + 10) {
-        hovered = true;
-      } else {
-        hovered = false;
-      }
-    } // end of if-else
-    
-    
-  }
-  
-  
-  public void keyEvent(KeyEvent e) {
-    //nothing yet
-  }
-  
-  public boolean valueChanged() {
-    if (changed) {
-      changed = false;
-      return true;
-    } else {
+      if (e.getAction() == MouseEvent.MOVE) {
+        mouseOver(e.getX(), e.getY());
+        if (hovered) {
+          return true;
+        } // end of if
+      } else if (!pressed && hovered && e.getAction() == MouseEvent.PRESS) {
+        pressed = true;   
+        if (style == HORIZONTAL) {
+          value = getValueFromX(e.getX());
+        } else if (style == VERTICAL){
+          value = getValueFromY(e.getY());
+        } else if (style == CIRCLE){
+          float a = getAngle(xPos, yPos, e.getX(),e.getY());
+          value = a/360*(max-min);
+        } // end of if-else
+        return true;
+      } else if (pressed && e.getAction() == MouseEvent.RELEASE) {
+        pressed = false;
+        changed = true;
+        return true;
+      } else if (pressed && e.getAction() == MouseEvent.DRAG) {
+        if (style == HORIZONTAL) {
+          value = getValueFromX(e.getX());
+        } else if (style == VERTICAL); {
+          value = getValueFromY(e.getY());
+        } else if (style == CIRCLE){
+          float a = getAngle(xPos, yPos, e.getX(),e.getY());
+          value = a/360*(max-min);
+        } // end of if-else
+        return true;
+      } else if (hovered && e.getAction() == MouseEvent.WHEEL) {
+        setValue(value + (e.getCount() * step));
+      } // end of if-else
       return false;
-    } // end of if-else
-  }
-  private int getXFromValue(float v) {
-    return (int)(xPos + ((float)width / (stopValue - startValue)) * (v - startValue));
-  }  
-  
-  private int getYFromValue(float v) {
-    return (int)(yPos + ((float)height / (stopValue - startValue)) * (v - startValue));
-  }
-  
-  private float getValueFromX(float x) {
-    float v = (((float)(x - xPos) * (stopValue - startValue)) / (float)width) + startValue;
-    float min = startValue;
-    float max = stopValue;
-    if (startValue > stopValue) {
-      min = stopValue;
-      max = startValue;
     }
-    if (v < min) {
-      v = min;
-    } // end of if
-    if (v > max) {
-      v = max;
-    } // end of if
     
-    if (v % step != 0) {
-      float s = v % step;
-      if (s < step / 2) {
-        v -= s;
-      } else {
-        v += (step - s);
-      } // end of if-else
-    } // end of if
-    
-    return v;
-  }
-  
-  private float getValueFromY(int y) {
-    float v = (((float)(y - yPos) * (stopValue - startValue)) / (float)height) + startValue;
-    float min = startValue;
-    float max = stopValue;
-    if (startValue > stopValue) {
-      min = stopValue;
-      max = startValue;
+    private void mouseOver(int xT, int yT) {
+      
+      if (style == HORIZONTAL) {
+        if (xT > xPos - 10 && xT < xPos + width + 10 && yT > yPos - 10 && yT < yPos + 10) {
+          hovered = true;
+        } else {
+          hovered = false;
+        }
+      } else if (style == VERTICAL) {
+        if (xT > xPos - 10 && xT < xPos + 10 && yT > yPos -10 && yT < yPos + height + 10) {
+          hovered = true;
+        } else {
+          hovered = false;
+        }
+      } else if (style == CIRCLE) {
+        if (width < getRadius(xPos, yPos, xT, yT)+5 && width > getRadius(xPos, yPos, xT, yT)-5) {
+          hovered = true;
+        } else {
+          hovered = false;// end of if-else
+          
+        }
+      }
     }
-    if (v < min) {
-      v = min;
-    } // end of if
-    if (v > max) {
-      v = max;
-    } // end of if
     
-    if (v % step != 0) {
-      float s = v % step;
-      if (s < step / 2) {
-        v -= s;
+    
+    public void keyEvent(KeyEvent e) {
+      //nothing yet
+    }
+    
+    public boolean valueChanged() {
+      if (changed) {
+        changed = false;
+        return true;
       } else {
-        v += (step - s);
+        return false;
       } // end of if-else
-    } // end of if
+    }
+    private int getXFromValue(float v) {
+      return (int)(xPos + ((float)width / (stopValue - startValue)) * (v - startValue));
+    }  
     
-    return v;
+    private int getYFromValue(float v) {
+      return (int)(yPos + ((float)height / (stopValue - startValue)) * (v - startValue));
+    }
+    
+    private float getValueFromX(float x) {
+      float v = (((float)(x - xPos) * (stopValue - startValue)) / (float)width) + startValue;
+      float min = startValue;
+      float max = stopValue;
+      if (startValue > stopValue) {
+        min = stopValue;
+        max = startValue;
+      }
+      if (v < min) {
+        v = min;
+      } // end of if
+      if (v > max) {
+        v = max;
+      } // end of if
+      
+      if (v % step != 0) {
+        float s = v % step;
+        if (s < step / 2) {
+          v -= s;
+        } else {
+          v += (step - s);
+        } // end of if-else
+      } // end of if
+      
+      return v;
+    }
+    
+    private float getValueFromY(int y) {
+      float v = (((float)(y - yPos) * (stopValue - startValue)) / (float)height) + startValue;
+      float min = startValue;
+      float max = stopValue;
+      if (startValue > stopValue) {
+        min = stopValue;
+        max = startValue;
+      }
+      if (v < min) {
+        v = min;
+      } // end of if
+      if (v > max) {
+        v = max;
+      } // end of if
+      
+      if (v % step != 0) {
+        float s = v % step;
+        if (s < step / 2) {
+          v -= s;
+        } else {
+          v += (step - s);
+        } // end of if-else
+      } // end of if
+      
+      return v;
+    }
+    public static float getCoordinates(float startX, float startY, float r, float a, boolean x) {
+      
+      if (x) {
+        return (r * parent.cos(parent.radians(a))) + startX;
+      } else {
+        return (-r * parent.sin(parent.radians(a))) + startY;
+      }
+    } // getCoordinates
+    public static float getRadius(float startX, float startY, float endX, float endY) {
+      return sqrt(sq(startX - endX) + sq(startY - endY));
+    } // getRadius
+    
+    public static float getAngle(float startX, float startY, float endX, float endY) {
+      float r = getRadius(startX, startY, endX, endY);
+      if (endY - startY > 0) { 
+        return degrees(acos((endX - startX)/(-r))) + 180;
+      } else {
+        return degrees(acos((endX - startX)/r));
+      }
+    } // getAngle
   }
 }
