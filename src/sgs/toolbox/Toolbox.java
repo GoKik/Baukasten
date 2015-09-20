@@ -39,6 +39,22 @@ public class Toolbox implements PConstants {
     propotion = (float)oldHeight / oldWidth; 
   }
   
+  public Toolbox(PApplet parent, int m, boolean r) {
+    this.parent = parent;
+    if (m == JAVA_MODE || m == ANDROID_MODE) {
+      mode = m;
+    }
+    parent.registerMethod("pre", this);
+    parent.registerMethod("draw", this);
+    parent.registerMethod("mouseEvent", this);
+    parent.registerMethod("keyEvent", this);
+    parent.registerMethod("dispose", this);
+    parent.frame.setResizable(r);
+    oldWidth = initWidth = parent.width;
+    oldHeight = initHeight = parent.height;
+    propotion = (float)oldHeight / oldWidth; 
+  }
+  
   public void add(GUIObject o) {
     objects.add(o);
   }
