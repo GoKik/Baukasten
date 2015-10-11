@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 public class Sizer extends GUIObject implements PConstants {
   
-  private Property horizontal, minX, minY, maxX, maxY, col;
-  private boolean hovered, active;
+  private boolean horizontal, hovered, active;
   private ArrayList<OnMoveListener> listeners;
+  private int minX, minY, maxX, maxY, col;
   
   public interface OnMoveListener {
     public void onStart();
@@ -26,43 +26,39 @@ public class Sizer extends GUIObject implements PConstants {
   
   public Sizer(PApplet p, int x, int y, int w, boolean h) {
     super(p, x, y, h?w:1, h?1:w);
-    horizontal = registerProperty("Horizontal", h);
+    horizontal = h;
     listeners = new ArrayList<OnMoveListener>();
-    col = registerProperty("Color", parent.color(0));
-    minX = registerProperty("Minimal X", x - 50);
-    minY = registerProperty("Minimal Y", y - 50);
-    maxX = registerProperty("Maximal X", x + 50);
-    maxY = registerProperty("Maximal Y", y + 50);
+    col = parent.color(0);
   }
   
   public boolean isHorizontal() {
-    return (boolean)horizontal.value;
+    return horizontal;
   }
   
   public void setMinX(int x) {
-    minX.value = x;
+    minX = x;
   }
   
   public void setMinY(int y) {
-    minY.value = y;
+    minY = y;
   }
   
   public void setMaxX(int x) {
-    maxX.value = x;
+    maxX = x;
   }
   
   public void setMaxY(int y) {
-    maxY.value = y;
+    maxY = y;
   }
   
   public void setColor(int c) {
-    col.value = c;
+    col = c;
   }
   
   public void draw() {
-    parent.stroke((int)col.value);
+    parent.stroke(col);
     parent.strokeWeight(1);
-    if ((boolean)horizontal.value) {
+    if (horizontal) {
       parent.line(xPos, yPos, xPos + width, yPos);
     } else {                          
       parent.line(xPos, yPos, xPos, yPos + height);
@@ -103,7 +99,7 @@ public class Sizer extends GUIObject implements PConstants {
   }
   
   private void mouseOver(int x, int y) {
-    if ((boolean)horizontal.value) {
+    if (horizontal) {
       hovered = (x > xPos && x < xPos + width && y > yPos - 5 && y < yPos + 5);
     } else {
       hovered = (x > xPos - 5 && x < xPos + 5 && y > yPos && y < yPos + height);
@@ -111,8 +107,8 @@ public class Sizer extends GUIObject implements PConstants {
   }
   
   private void dragged(int x, int y) {
-    if ((boolean)horizontal.value) {
-      if (y >= (int)minY.value && y <= (int)maxY.value) {
+    if (horizontal) {
+      if (y >= minY && y <= maxY) {
         yPos = y;
         if (listeners.size() > 0) {
           for (int i = 0; i < listeners.size(); i++) {
@@ -121,7 +117,7 @@ public class Sizer extends GUIObject implements PConstants {
         } // end of if
       } // end of if
     } else {
-      if (x >= (int)minX.value && x <= (int)maxX.value) {
+      if (x >= minX && x <= maxX) {
         xPos = x;               
         if (listeners.size() > 0) {
           for (int i = 0; i < listeners.size(); i++) {

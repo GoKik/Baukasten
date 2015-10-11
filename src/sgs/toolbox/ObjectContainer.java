@@ -10,21 +10,21 @@ import java.util.ArrayList;
 
 public class ObjectContainer extends GUIContainer {
   
-  private Property bgCol;
+  private int bgCol;
   
   public ObjectContainer(PApplet p, int x, int y, int w, int h) {
     super(p, x, y, w, h);
-    bgCol = registerProperty("Background Color", -1);
+    bgCol = -1;
   }
   
   public void setBackgroundColor(int c) {
-    bgCol.value = c;
+    bgCol = c;
   }
   
   public void draw() {
     parent.noStroke();
-    if ((int)bgCol.value >= 0) {
-      parent.fill((int)bgCol.value);
+    if (bgCol >= 0) {
+      parent.fill(bgCol);
       parent.rect(xPos, yPos, width, height);
     } // end of if
     

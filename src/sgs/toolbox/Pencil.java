@@ -10,60 +10,32 @@ import java.util.ArrayList;
 
 public class Pencil extends GUIContainer implements PConstants {
   
-  private boolean isDown;
-  private Property fillBG, snapToM, keepDProps, col, bgCol, weight;
+  private boolean isDown, fillBG, snapToM, keepDProps = true;
   private int oldPX, oldPY, penX, penY, oldW, oldH;
   private float angle = 0;
   private ArrayList<Line> drawing = new ArrayList<Line>();
+  private int col, bgCol;
+  private int weight = 1;
   
   public Pencil(PApplet p, int x, int y, int w, int h) {
     super(p, x, y, w, h);
-    col = registerProperty("Color", parent.color(0, 0, 0));
-    fillBG = registerProperty("Fill Background", false);
-    snapToM = registerProperty("Snap to Mouse", false);
-    keepDProps = registerProperty("Keep Drawing Proportions", true);
-    bgCol = registerProperty("Background Color", parent.color(255, 255, 255));
-    weight = registerProperty("Weight", 1);
+    col = parent.color(0, 0, 0);
     penX = x;
     penY = y;
     oldW = w;
     oldH = h;
-    addOnPropertyChangedListener(new OnPropertyChangedListener() {
-      public void onPropertyChanged(String tag, Object value) {
-        if (tag.equals("Background Color")) {
-          setBackgroundColor((int)value);
-        } // end of if
-      }
-    });
   }
   
   public void snapToMouse(boolean s) {
-    snapToM.value = s;
+    snapToM = s;
   }
   
   public void keepDrawingPropotions(boolean p) {
-    keepDProps.value = p;
-  }
-  
-  public void setColor(int c) {
-    col.value = c;
-  }
-  
-  public void setBackgroundColor(int c) {
-    bgCol.value = c;
-    fillBG.value = true;
-  }
-  
-  public void fillBackground(boolean b) {
-    fillBG.value = b;
-  }
-  
-  public void setStrokeWidth(int b) {
-    weight.value = b;
+    keepDProps = p;
   }
   
   public boolean mouseEvent(MouseEvent e) {
-    if ((boolean)snapToM.value) {
+    if (snapToM) {
       if (e.getAction() == MouseEvent.PRESS && inBounds(e.getX(), e.getY())) {
         if (isUp()) {
           moveTo(e.getX(), e.getY());
@@ -104,7 +76,7 @@ public class Pencil extends GUIContainer implements PConstants {
     float widthFactor = (float)width / oldW;
     float heightFactor = (float)height / oldH; 
     for (int i = 0; i < drawing.size(); i++) {
-      drawing.get(i).onResize((boolean)keepDProps.value?heightFactor:widthFactor, heightFactor);
+      drawing.get(i).onResize(keepDProps?heightFactor:widthFactor, heightFactor);
     } // end of if
   }
   
@@ -118,13 +90,13 @@ public class Pencil extends GUIContainer implements PConstants {
   }
   
   public void draw() {
-    if ((boolean)fillBG.value) {
+    if (fillBG) {
       parent.noStroke();
-      parent.fill((int)bgCol.value);
+      parent.fill(bgCol);
       parent.rect(xPos, yPos, width, height);  
     } // end of if
-    parent.stroke((int)col.value);
-    parent.strokeWeight((int)weight.value);
+    parent.stroke(col);
+    parent.strokeWeight(weight);
     for (int i = 0; i < drawing.size(); i++) {
       drawing.get(i).draw(xPos, yPos);
     }
@@ -244,12 +216,25 @@ public class Pencil extends GUIContainer implements PConstants {
     angle %= 360;
   }
   
+  public void setColor(int c) {
+    col = c;
+  }
+  
+  public void setBackgroundColor(int c) {
+    bgCol = c;
+    fillBG = true;
+  }
+  
+  public void setStrokeWidth(int b) {
+    weight = b;
+  }
+  
   public boolean isUp() {
     return !isDown;
   }
   
   public int getColor() {
-    return (int)col.value;
+    return col;
   }
   
   public void clearDrawing() {
