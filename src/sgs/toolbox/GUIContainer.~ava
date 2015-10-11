@@ -43,10 +43,10 @@ public abstract class GUIContainer extends GUIObject implements PConstants {
   
   public void addSizer(Sizer s, boolean setStart, boolean setStop) {
     s1 = s;
-    final int deltaX = s1.getXPos() - xPos;
-    final int deltaY = s1.getYPos() - yPos;
-    final int deltaW = s1.getXPos() - (xPos + width);
-    final int deltaH = s1.getYPos() - (yPos + height);
+    final int deltaX = s1.getX() - xPos;
+    final int deltaY = s1.getY() - yPos;
+    final int deltaW = s1.getX() - (xPos + width);
+    final int deltaH = s1.getY() - (yPos + height);
     final boolean horizontal = s1.isHorizontal();
     s1.addOnMoveListener(new Sizer.OnMoveListener() {
       public void onStart() {

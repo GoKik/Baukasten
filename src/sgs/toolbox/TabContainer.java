@@ -11,75 +11,82 @@ import java.util.ArrayList;
 
 public class TabContainer extends GUIContainer implements PConstants {
   
-  private ArrayList<String> tabNames;
-  private int selectedTab = 0;
-  private int col, bgCol, mCol, menuHeight;
+  private Property col, bgCol, mCol, menuHeight, selectedTab;
   private int hovered = -1, clicked = -1;
   
   
   public TabContainer(PApplet p, int x, int y, int w, int h, int hM) {
     super(p, x, y, w, h);
-    menuHeight = hM;
-    tabNames = new ArrayList<String>();
+    menuHeight = registerProperty("Menu Height", hM);
+    col = registerProperty("Color", parent.color(255, 255, 255));
+    bgCol = registerProperty("Background Color", parent.color(100, 100, 100));
+    mCol = registerProperty("Menu Color", parent.color(70, 70, 70));     
+    selectedTab = registerProperty("Selected Tab", 0);
   }
   
   public void setColor(int c) {
-    col = c;
+    col.value = c;
   }
   
   public void setBackgroundColor(int c) {
-    bgCol = c;
+    bgCol.value = c;
   }
   
   public void setMenuColor(int c) {
-    mCol = c;
+    mCol.value = c;
   }
   
   public void newTab(String n) {
     objects.add(new Tab(parent, n));
-    tabNames.add(n);
   }
   
   public void removeTab(String n) {
-    int i = tabNames.indexOf(n);
-    objects.remove(i);
-    tabNames.remove(i);
+    for (int i = 0; i < objects.size(); i++) {
+      if (((String)((TabContainer.Tab)objects.get(i)).getName()).equals(n)) {
+        objects.remove(i);
+        break;
+      } // end of if
+    } // end of for
   }
   
   public int getSelectedTab() {
-    return selectedTab;
+    return (int)selectedTab.value;
   }
   
   public void chooseTab(int i) {
-    selectedTab = i;
-    if (selectedTab < 0) {
-      selectedTab = objects.size() - 1;
+    selectedTab.value = i;
+    if ((int)selectedTab.value < 0) {
+      selectedTab.value = objects.size() - 1;
     } // end of if
-    if (selectedTab >= objects.size()) {
-      selectedTab = 0;
+    if ((int)selectedTab.value >= objects.size()) {
+      selectedTab.value = 0;
     } // end of if
   }
   
   public void addObject(String n, GUIObject o) {
-    int i = tabNames.indexOf(n);
-    ((TabContainer.Tab)objects.get(i)).addObject(o);
+    for (int i = 0; i < objects.size(); i++) {
+      if (((String)((TabContainer.Tab)objects.get(i)).getName()).equals(n)) {
+        ((TabContainer.Tab)objects.get(i)).addObject(o);
+        break;
+      } // end of if
+    } // end of for
   }
   
   public void draw() {
     parent.noStroke();
-    parent.fill(bgCol);
-    parent.rect(xPos, yPos + menuHeight, width, height - menuHeight); 
+    parent.fill((int)bgCol.value);
+    parent.rect(xPos, yPos + (int)menuHeight.value, width, height - (int)menuHeight.value); 
     if (onDrawListener != null) {                 
       onDrawListener.draw(xPos, yPos, width, height);
     }
-    parent.translate(xPos, yPos + menuHeight);
-    if (selectedTab < objects.size()) {
-      objects.get(selectedTab).draw();
+    parent.translate(xPos, yPos + (int)menuHeight.value);
+    if ((int)selectedTab.value < objects.size()) {
+      objects.get((int)selectedTab.value).draw();
     } // end of if
-    parent.translate(-xPos, -yPos - menuHeight); 
+    parent.translate(-xPos, -yPos - (int)menuHeight.value); 
     parent.noStroke();
-    parent.fill(mCol);
-    parent.rect(xPos, yPos, width, menuHeight);
+    parent.fill((int)mCol.value);
+    parent.rect(xPos, yPos, width, (int)menuHeight.value);
     parent.textAlign(CENTER, CENTER);
     int tabW = 70;
     int menuW = objects.size() * tabW;
@@ -87,15 +94,15 @@ public class TabContainer extends GUIContainer implements PConstants {
       tabW = width / objects.size();
     } // end of if
     for (int i = 0; i < objects.size() ; i++ ) {
-      if (i == hovered && i != selectedTab) {
+      if (i == hovered && i != (int)selectedTab.value) {
         parent.textSize(11);
       } else {
         parent.textSize(12);
       } // end of if-else
-      parent.fill(col);
-      parent.text(tabNames.get(i), xPos + (i * tabW), yPos + (menuHeight/4), tabW, menuHeight/2); 
+      parent.fill((int)col.value);
+      parent.text(((TabContainer.Tab)objects.get(i)).getName(), xPos + (i * tabW), yPos + ((int)menuHeight.value/4), tabW, (int)menuHeight.value/2); 
     } // end of for
-    parent.rect(xPos + (selectedTab * tabW), yPos + menuHeight - 2, tabW, 2);  
+    parent.rect(xPos + ((int)selectedTab.value * tabW), yPos + (int)menuHeight.value - 2, tabW, 2);  
   }
   
   public boolean mouseEvent(MouseEvent e) {
@@ -105,14 +112,14 @@ public class TabContainer extends GUIContainer implements PConstants {
         return true;
       } // end of if
     } else if (hovered > -1 && e.getAction() == MouseEvent.RELEASE) {
-      selectedTab = hovered;
+      selectedTab.value = hovered;
       return true;
     } else if (isBarHovered(e.getX(), e.getY()) && e.getAction() == MouseEvent.WHEEL) {
-      chooseTab(selectedTab - e.getCount());
+      chooseTab((int)selectedTab.value - e.getCount());
     }       
-    MouseEvent eNew = new MouseEvent(e.getNative(), e.getMillis(), e.getAction(), e.getModifiers(), e.getX() - xPos, e.getY() - yPos - menuHeight, e.getButton(), e.getCount());
-    if (selectedTab < objects.size()) {  
-      if (objects.get(selectedTab).mouseEvent(eNew)) {
+    MouseEvent eNew = new MouseEvent(e.getNative(), e.getMillis(), e.getAction(), e.getModifiers(), e.getX() - xPos, e.getY() - yPos - (int)menuHeight.value, e.getButton(), e.getCount());
+    if ((int)selectedTab.value < objects.size()) {  
+      if (objects.get((int)selectedTab.value).mouseEvent(eNew)) {
         return true;
       }
     }   
@@ -120,13 +127,13 @@ public class TabContainer extends GUIContainer implements PConstants {
   }
   
   public void keyEvent(KeyEvent e) {
-    if (selectedTab < objects.size()) {
-      objects.get(selectedTab).keyEvent(e);
+    if ((int)selectedTab.value < objects.size()) {
+      objects.get((int)selectedTab.value).keyEvent(e);
     } // end of if 
   }
   
   private boolean isBarHovered(int x, int y) {
-    if (x > xPos && x < xPos + width && y > yPos && y < yPos + menuHeight) {
+    if (x > xPos && x < xPos + width && y > yPos && y < yPos + (int)menuHeight.value) {
       return true;
     } else {
       return false;
@@ -135,7 +142,7 @@ public class TabContainer extends GUIContainer implements PConstants {
   
   private void mouseOver(int x, int y) {
     for (int i = 0; i < objects.size() ; i++ ) {
-      if (x > xPos + (i * 70) && x < xPos + (i * 70) + 70 && y > yPos && y < yPos + menuHeight) {
+      if (x > xPos + (i * 70) && x < xPos + (i * 70) + 70 && y > yPos && y < yPos + (int)menuHeight.value) {
         hovered = i;
         return;
       } // end of if
@@ -145,13 +152,17 @@ public class TabContainer extends GUIContainer implements PConstants {
   
   protected class Tab extends GUIObject implements PConstants {
     
-    private String name;
+    private Property name;
     private ArrayList<GUIObject> objects;
     
     public Tab(PApplet p, String n) {
       super(p, 0, 0);
-      name = n;
+      name = registerProperty("Name", n);
       objects = new ArrayList<GUIObject>();
+    }
+    
+    public String getName() {
+      return (String)name.value;
     }
     
     public void addObject(GUIObject o) {

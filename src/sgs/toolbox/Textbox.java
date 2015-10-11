@@ -10,16 +10,41 @@ import java.util.ArrayList;
 
 public class Textbox extends GUIObject implements PConstants {
   
-  private int col, bgCol, hlCol;
-  private String content = "";
+  private Property col, bgCol, hlCol, content;
   private boolean hovered, pressed, focused, enterPressed;
   private int cursor = 0, startPos = 0;
   
   public Textbox(PApplet p, int x, int y, int w, int h) {
     super(p, x, y, w, h);
-    col = parent.color(0, 0, 0);
-    bgCol = parent.color(230, 230, 230);
-    hlCol = parent.color(255, 100, 100);
+    col = registerProperty("Color", parent.color(0, 0, 0));
+    bgCol = registerProperty("Background Color", parent.color(230, 230, 230));
+    hlCol = registerProperty("Highlight Color", parent.color(255, 100, 100));
+    content = registerProperty("Content", "");
+    addOnPropertyChangedListener(new OnPropertyChangedListener() {
+      public void onPropertyChanged(String tag, Object v) {
+        if (tag.equals("Content")) {
+          setContent((String)v);
+        } // end of if
+      }
+    });
+  }
+  
+  public void setContent(String c) {
+    content.value = c;
+    cursor = 0;
+    startPos = 0;
+  }
+  
+  public void setColor(int c) {
+    col.value = c;
+  }
+  
+  public void setHightlightColor(int c) {
+    hlCol.value = c;
+  }
+  
+  public void setBackgroundColor(int c) {
+    bgCol.value = c;
   }
   
   public void keyEvent(KeyEvent e) {
@@ -31,15 +56,15 @@ public class Textbox extends GUIObject implements PConstants {
           startPos--;
         } // end of if
       } // end of if
-      if (e.getKeyCode() == 39 && cursor < content.length()) {
+      if (e.getKeyCode() == 39 && cursor < ((String)content.value).length()) {
         cursor++;
-        while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {  
+        while (parent.textWidth(((String)content.value).substring(startPos, cursor)) > width - 10) {  
           startPos++;
         } // end of if
       } // end of if
       if (e.getKeyCode() == 35) {
-        cursor = content.length();
-        while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {  
+        cursor = ((String)content.value).length();
+        while (parent.textWidth(((String)content.value).substring(startPos, cursor)) > width - 10) {  
           startPos++;
         } // end of if
       } // end of if
@@ -54,12 +79,12 @@ public class Textbox extends GUIObject implements PConstants {
         enterPressed = true;
       } else if (e.getKey() == BACKSPACE) { 
         if (cursor > 0) {
-          if (cursor < content.length()) {
-            String a = content.substring(0, cursor - 1);
-            String b = content.substring(cursor);
-            content = a + b;
+          if (cursor < ((String)content.value).length()) {
+            String a = ((String)content.value).substring(0, cursor - 1);
+            String b = ((String)content.value).substring(cursor);
+            content.value = a + b;
           } else {  
-            content = content.substring(0, content.length() - 1);   
+            content.value = ((String)content.value).substring(0, ((String)content.value).length() - 1);   
           } // end of if-else
           cursor--;
           if (cursor < startPos) {
@@ -67,21 +92,21 @@ public class Textbox extends GUIObject implements PConstants {
           } // end of if
         } // end of if
       } else if (e.getKey() == DELETE) {
-        if (cursor < content.length()) {
-          String a = content.substring(0, cursor);
-          String b = content.substring(cursor + 1);
-          content = a + b;
+        if (cursor < ((String)content.value).length()) {
+          String a = ((String)content.value).substring(0, cursor);
+          String b = ((String)content.value).substring(cursor + 1);
+          content.value = a + b;
         }
       } else {
-        String a = content;
+        String a = ((String)content.value);
         String b = "";
-        if (cursor < content.length()) {    
-          a = content.substring(0, cursor);
-          b = content.substring(cursor);
+        if (cursor < ((String)content.value).length()) {    
+          a = ((String)content.value).substring(0, cursor);
+          b = ((String)content.value).substring(cursor);
         }
-        content = a + e.getKey() + b;
+        content.value = a + e.getKey() + b;
         cursor++;
-        while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {
+        while (parent.textWidth(((String)content.value).substring(startPos, cursor)) > width - 10) {
           startPos++;
         } 
       } // end of if
@@ -107,15 +132,15 @@ public class Textbox extends GUIObject implements PConstants {
     } else if (focused && e.getAction() == MouseEvent.WHEEL) {
       cursor += e.getCount();
       if (cursor < 0) {
-        cursor = content.length();
+        cursor = ((String)content.value).length();
       } // end of if
-      if (cursor > content.length()) {
+      if (cursor > ((String)content.value).length()) {
         cursor = 0;
       }
       while (cursor < startPos) {
         startPos--;
       } // end of if
-      while (parent.textWidth(content.substring(startPos, cursor)) > width - 10) {  
+      while (parent.textWidth(((String)content.value).substring(startPos, cursor)) > width - 10) {  
         startPos++;
       } // end of if
     }
@@ -124,7 +149,7 @@ public class Textbox extends GUIObject implements PConstants {
   
   public void onResize(float xFactor, float yFactor) {
     super.onResize(xFactor, yFactor);
-    while (parent.textWidth(content.substring(startPos, cursor)) > width - 30) {  
+    while (parent.textWidth(((String)content.value).substring(startPos, cursor)) > width - 30) {  
       startPos++;
     } // end of if
   }
@@ -147,8 +172,8 @@ public class Textbox extends GUIObject implements PConstants {
       int minD = 100;
       int ind = 0;
       parent.textSize(20);
-      for (int i = 0; i <= content.substring(startPos).length() ;i++ ) {
-        int d = (int)parent.abs(parent.textWidth(content.substring(startPos, startPos + i)) - dX);
+      for (int i = 0; i <= ((String)content.value).substring(startPos).length() ;i++ ) {
+        int d = (int)parent.abs(parent.textWidth(((String)content.value).substring(startPos, startPos + i)) - dX);
         if (d < minD) {
           minD = d;
           ind = i;
@@ -173,16 +198,16 @@ public class Textbox extends GUIObject implements PConstants {
     parent.textSize(20);
     parent.textAlign(LEFT, CENTER);
     parent.noStroke();
-    parent.fill(bgCol);
+    parent.fill((int)bgCol.value);
     parent.rect(xPos, yPos, width, height);
-    parent.stroke(hlCol);
+    parent.stroke((int)hlCol.value);
     parent.strokeWeight(2);
     parent.line(xPos, yPos - 2, xPos, yPos + height + 2);
     parent.line(xPos + width, yPos - 2, xPos + width, yPos + height + 2);
-    parent.fill(col);
+    parent.fill((int)col.value);
     parent.strokeWeight(1);
-    int x = xPos + 5 + (int)parent.textWidth(content.substring(startPos, cursor));
-    parent.text(content.substring(startPos), xPos + 5, yPos, width - 10, height);
+    int x = xPos + 5 + (int)parent.textWidth(((String)content.value).substring(startPos, cursor));
+    parent.text(((String)content.value).substring(startPos), xPos + 5, yPos, width - 10, height);
     if (focused && parent.millis() % 800 < 300) {
       parent.line(x, yPos + 5, x, yPos + height - 5);
     } // end of if
@@ -190,15 +215,7 @@ public class Textbox extends GUIObject implements PConstants {
   }
   
   public String getContent() {
-    return content;
-  }
-  
-  public void setColor(int c) {
-    col = c;
-  }
-  
-  public void setBackgroundColor(int c) {
-    bgCol = c;
+    return (String)content.value;
   }
   
 }

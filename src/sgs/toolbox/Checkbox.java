@@ -14,79 +14,95 @@ public class Checkbox extends GUIObject implements PConstants {
   public final static int CHECKBOX_ROUND = 2;
   public final static int TOGGLE_BUTTON = 3;
   
-  private String name;
-  private int col, bgCol, disCol;
-  private int textSize, style;
-  private boolean hovered, pressed, checked, disabled;
+  private Property name, col, bgCol, disCol, textSize, style, checked;
+  private boolean hovered, pressed, disabled;
   
   public Checkbox(PApplet p, String n, int x, int y, boolean c) {
     super(p, x, y, 30, 30);
-    name = n;
-    col = parent.color(0, 0, 0);
-    bgCol = parent.color(255, 255, 255);
-    disCol = parent.color(30, 30, 30, 150);
-    style = CHECKBOX;
-    textSize = 15;
-    checked = c;
+    name = registerProperty("Name", n);
+    col = registerProperty("Color", parent.color(0, 0, 0));
+    bgCol = registerProperty("Background Color", parent.color(255, 255, 255));
+    disCol = registerProperty("Disabled Color", parent.color(30, 30, 30, 150));
+    style = registerProperty("Style", CHECKBOX);
+    textSize = registerProperty("Text Size", 15);
+    checked = registerProperty("Checked", c);
+    addOnPropertyChangedListener(new OnPropertyChangedListener() {
+      public void onPropertyChanged(String tag, Object value) {
+        if (tag.equals("Style")) {
+          setStyle((int)value);
+        } // end of if
+      }
+    });
+  }
+  
+  public void setName(String n) {
+    name.value = n;
   }
   
   public void setColor(int c) {
-    col = c;
+    col.value = c;
   }
   
   public void setBackgroundColor(int c) {
-    bgCol = c;
+    bgCol.value = c;
   }
   
   public void setzeTextSize(int t) {
-    textSize = t;
+    textSize.value = t;
   }
   
   public void setStyle(int i) {
     if (i == CHECKBOX || i == CHECKBOX_ROUND) {
-      style = i;
+      style.value = i;
       height = width;
     } else if (i == TOGGLE_BUTTON) {
-      style = i;
+      style.value = i;
       width = height * 2;
     }
   }
   
   public void draw() {
-    parent.textSize(textSize);
+    parent.textSize((int)textSize.value);
     parent.strokeWeight(2);
     
     if (pressed) {
-      if (checked) {
-        parent.fill(bgCol);
-        parent.stroke(col);
+      if ((boolean)checked.value) {
+        parent.fill((int)bgCol.value);
+        parent.stroke((int)col.value);
         drawBody(xPos + 2, yPos + 2, width - 4, height - 4);
       } else {
-        parent.fill(bgCol);
-        parent.stroke(col);
+        parent.fill((int)bgCol.value);
+        parent.stroke((int)col.value);
         drawBody(xPos + 2, yPos + 2, width - 4, height - 4);
-        parent.fill(col);
+        parent.fill((int)col.value);
         parent.noStroke();
         drawBody(xPos + 7, yPos + 7, width - 13, height - 13);
       }
-    } else if ((hovered && !checked) || (!hovered && checked)) {
-      parent.fill(bgCol);
-      parent.stroke(col);
+    } else if (hovered) {
+      parent.fill((int)bgCol.value);
+      parent.stroke((int)col.value);
       drawBody(xPos, yPos, width, height);
-      parent.fill(col);
+      parent.fill((int)col.value, 150);
+      parent.noStroke();
+      drawBody(xPos + 5, yPos + 5, width - 9, height - 9);
+    } else if ((boolean)checked.value) {
+      parent.fill((int)bgCol.value);
+      parent.stroke((int)col.value);
+      drawBody(xPos, yPos, width, height);
+      parent.fill((int)col.value);
       parent.noStroke();
       drawBody(xPos + 5, yPos + 5, width - 9, height - 9);
     } else {
-      parent.fill(bgCol);
-      parent.stroke(col);
+      parent.fill((int)bgCol.value);
+      parent.stroke((int)col.value);
       drawBody(xPos, yPos, width, height);
     }
     
     if (disabled) {
-      parent.fill(disCol);
-      parent.stroke(disCol);
+      parent.fill((int)disCol.value);
+      parent.stroke((int)disCol.value);
       drawBody(xPos, yPos, width, height);
-      if (style == TOGGLE_BUTTON) {
+      if ((int)style.value == TOGGLE_BUTTON) {
         parent.fill(255, 255, 255);
         parent.textAlign(CENTER, CENTER);
         parent.text("DISABLED", xPos + (width / 2), yPos + (height / 2));
@@ -95,21 +111,26 @@ public class Checkbox extends GUIObject implements PConstants {
   }
   
   private void drawBody(int x, int y, int b, int h) {
-    if (style == CHECKBOX) { 
+    if ((int)style.value == CHECKBOX) { 
       parent.textAlign(LEFT, CENTER);
       parent.rect(x, y, b, h);
-      parent.fill(col);
-      parent.text(name, xPos + 35, yPos + (height / 2));
-    } else if (style == CHECKBOX_ROUND) {
+      parent.fill((int)col.value);
+      parent.text((String)name.value, xPos + 35, yPos + (height / 2));
+    } else if ((int)style.value == CHECKBOX_ROUND) {
       parent.textAlign(LEFT, CENTER);
       parent.ellipseMode(CORNER);
       parent.ellipse(x, y, b, h);
-      parent.fill(col);
-      parent.text(name, xPos + 35, yPos + (height / 2));
-    } else if (style == TOGGLE_BUTTON) {
+      parent.fill((int)col.value);
+      parent.text((String)name.value, xPos + 35, yPos + (height / 2));
+    } else if ((int)style.value == TOGGLE_BUTTON) {
       parent.textAlign(CENTER, CENTER);
       parent.rect(x, y, b, h);
-      parent.text(name, xPos + (width / 2), yPos + (height / 2));
+      if ((boolean)checked.value) {
+        parent.fill((int)bgCol.value);
+      } else {
+        parent.fill((int)col.value);
+      } // end of if
+      parent.text((String)name.value, xPos + (width / 2), yPos + (height / 2));
     }
   }
   
@@ -134,13 +155,13 @@ public class Checkbox extends GUIObject implements PConstants {
   }
   
   private void mouseOver(int x, int y) {
-    if (style == CHECKBOX || style == TOGGLE_BUTTON) {
+    if ((int)style.value == CHECKBOX || (int)style.value == TOGGLE_BUTTON) {
       if (x > xPos && x < xPos + width && y > yPos && y < yPos + height) {
         hovered = true;
       } else {
         hovered = false;
       }
-    } else if (style == CHECKBOX_ROUND) {
+    } else if ((int)style.value == CHECKBOX_ROUND) {
       if (PApplet.sqrt(PApplet.pow(x - (xPos + (width/2)), 2) + PApplet.pow(y - (yPos + (width/2)), 2)) < width/2) {
         hovered = true;
       } else {
@@ -167,14 +188,14 @@ public class Checkbox extends GUIObject implements PConstants {
     if (!disabled) {
       mouseOver(x, y);
       if (hovered) {
-        checked = !checked;
+        checked.value = !(boolean)checked.value;
       }
     }
     pressed = false;
   }
   
   public boolean isChecked() {
-    return checked;
+    return (boolean)checked.value;
   }
   
   public boolean isMouseOver() {
@@ -204,11 +225,11 @@ public class Checkbox extends GUIObject implements PConstants {
   }
   
   protected void check() {
-    checked = true;
+    checked.value = true;
   }
   
   protected void uncheck() {
-    checked = false;
+    checked.value = false;
   }
   
 }

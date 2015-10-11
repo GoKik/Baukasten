@@ -14,6 +14,7 @@ public class Toolbox implements PConstants {
   public final static int JAVA_MODE = 1;
   public final static int ANDROID_MODE = 2;
   private int mode, oldWidth, oldHeight, initWidth, initHeight;
+  private int bgCol;
   private float propotion;
   private long resizeMillis = 0;
   private ArrayList<GUIObject> objects = new ArrayList<GUIObject>();
@@ -37,6 +38,7 @@ public class Toolbox implements PConstants {
     oldWidth = initWidth = parent.width;
     oldHeight = initHeight = parent.height;
     propotion = (float)oldHeight / oldWidth; 
+    bgCol = parent.color(255, 255, 255);
   }
   
   public Toolbox(PApplet parent, int m, boolean r) {
@@ -52,7 +54,12 @@ public class Toolbox implements PConstants {
     parent.frame.setResizable(r);
     oldWidth = initWidth = parent.width;
     oldHeight = initHeight = parent.height;
-    propotion = (float)oldHeight / oldWidth; 
+    propotion = (float)oldHeight / oldWidth;  
+    bgCol = parent.color(255, 255, 255);
+  }
+  
+  public void setBackgroundColor(int c) {
+    bgCol = c;
   }
   
   public void add(GUIObject o) {
@@ -81,6 +88,7 @@ public class Toolbox implements PConstants {
   }
   
   public void draw() {
+    parent.background(bgCol);
     for (int i = 0; i < objects.size(); i++) {
       objects.get(i).draw();
     }
