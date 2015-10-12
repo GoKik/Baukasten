@@ -129,7 +129,7 @@ public class TabContainer extends GUIContainer implements PConstants {
     parent.fill(mCol);
     parent.rect(xPos, yPos, width, menuHeight);
     parent.textAlign(CENTER, CENTER);
-    int tabW = tabWidth;
+    tabW = tabWidth;
     int menuW = objects.size() * tabW;
     if (menuW > width) {
       tabW = width / objects.size();
