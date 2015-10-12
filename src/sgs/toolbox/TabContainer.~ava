@@ -13,7 +13,7 @@ public class TabContainer extends GUIContainer implements PConstants {
   
   private ArrayList<String> tabNames;
   private int selectedTab = 0;
-  private int col, bgCol, mCol, menuHeight, tabWidth, minTabWidth;
+  private int col, bgCol, mCol, menuHeight, tabWidth = 70, minTabWidth = 30;
   private int hovered = -1, clicked = -1;
   
   
@@ -129,7 +129,7 @@ public class TabContainer extends GUIContainer implements PConstants {
     parent.fill(mCol);
     parent.rect(xPos, yPos, width, menuHeight);
     parent.textAlign(CENTER, CENTER);
-    tabW = tabWidth;
+    int tabW = tabWidth;
     int menuW = objects.size() * tabW;
     if (menuW > width) {
       tabW = width / objects.size();
@@ -148,13 +148,18 @@ public class TabContainer extends GUIContainer implements PConstants {
       int x2 = x + tabW;
       if (x < xPos + width) {
         if (x2 < xPos + width) {
+          if (i == selectedTab) {
+            parent.rect(x, yPos + menuHeight - 2, tabW, 2); 
+          } // end of if
           parent.text(tabNames.get(i), x, yPos + (menuHeight/4), tabW, menuHeight/2); 
-        } else {
+        } else {        
+          if (i == selectedTab) {
+            parent.rect(x, yPos + menuHeight - 2, (xPos + width) - x, 2); 
+          } // end of if
           parent.text(tabNames.get(i), x, yPos + (menuHeight/4), (xPos + width) - x, menuHeight/2); 
         } // end of if-else
-      } // end of if
-    } // end of for
-    parent.rect(xPos + (selectedTab * tabW), yPos + menuHeight - 2, tabW, 2);  
+      }
+    } // end of for 
   }
   
   public boolean mouseEvent(MouseEvent e) {

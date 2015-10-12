@@ -12,4 +12,8 @@ CheckboxGroup: Put some Checkboxes together.
 Slider: Slide to a value.
 Textbox: Enter Text.
 Tab / TabContainer: Set different Layouts and switch between them.
+Object-Container: Puts your Objects into a Group
+Sizer: Resize Containers manually;
+OnDrawListener: Opportunity to add custom draw()-Function to a Container
+MouseEventManager: Manages Mouse-Events of your custom Gui-Objects
 
