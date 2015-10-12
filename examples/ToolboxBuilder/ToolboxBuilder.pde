@@ -5,7 +5,6 @@ TabContainer tC;
 Button addButton, addSlider, addCheckbox, addTextbox, addTab;
 ObjectContainer oC;
 
-
 ArrayList<ObjectEditor> editObjects;
 
 void setup() {
@@ -34,7 +33,6 @@ void setup() {
   tC.addObject("Add", addTextbox);
   tC.addObject("Add", addTab);
   
-  
   tC.newTab("Settings");
 
   toolbox.add(oC);
@@ -42,7 +40,6 @@ void setup() {
 }
 
 void draw() {
-
   if (addButton.wasPressed()) {
     Button b = new Button(this, " ", 310, 10, 60, 60);
     registerObject(b);
@@ -73,8 +70,8 @@ void registerObject(GUIObject o) {
   String tab = o.getClass().getSimpleName();
   tab += " " + String.valueOf(editObjects.size() - 1);
   tC.newTab(tab);
-  if (o.getClass().getSuperclass() == GUIContainer.class) {
-    tC.addObject(tab, new BuildContainer(this, 0, 0, tC.getWidth(), height - 40, (GUIContainer)o));
+  if (o.getClass() == TabContainer.class) {
+    tC.addObject(tab, new TabBuilder(this, 0, 0, tC.getWidth(), height - 40, (TabContainer)o));
   } else {
     tC.addObject(tab, new PropertiesList(this, 0, 0, tC.getWidth(), height - 40, o));
   }

@@ -42,14 +42,62 @@ public class ObjectEditor extends GUIObject {
 
   public void draw() {
     object.draw();
-    if (!hideButtons && btnMove.isPressed() && onMove) {
-      object.setProperty("X", startX[0] + (mouseX - startX[1]));
-      object.setProperty("Y", startY[0] + (mouseY - startY[1]));
+    
+    if (!hideButtons) {
+      btnMove.draw();
+      btnResize.draw();
     }
-    if (!hideButtons && btnResize.isPressed() && onResize) {
+  }
+
+  public boolean mouseEvent(MouseEvent e) {
+    if (object.getClass().getSuperclass() == GUIContainer.class) {
+      if (object.mouseEvent(e)) {
+        return true;
+      }
+    }
+    if (mouseManager.mouseEvent(e)) { //<>//
+      if (mouseManager.isHovered()) {
+        hideButtons = false;
+      }
+      return true;
+    } else if (!hideButtons && btnMove.mouseEvent(e)) { 
+      if (e.getAction() == MouseEvent.PRESS && !onMove) {
+        startX[0] = xPos;
+        startX[1] = e.getX();
+        startY[0] = yPos;
+        startY[1] = e.getY();
+        onMove = true;
+      }
+      if (e.getAction() == MouseEvent.RELEASE) {
+        onMove = false;
+      }
+      return true;
+    } else if (!hideButtons && btnResize.mouseEvent(e)) {
+      if (e.getAction() == MouseEvent.PRESS && !onResize) {
+        startX[0] = width;
+        startX[1] = e.getX();
+        startY[0] = height;
+        startY[1] = e.getY();
+        onResize = true;
+      }
+      if (e.getAction() == MouseEvent.RELEASE) {
+        onResize = false;
+      }
+      return true;
+    } else if (e.getAction() == MouseEvent.PRESS) {
+      hideButtons = true;
+    } else if (e.getAction() == MouseEvent.RELEASE) {
+      onResize = false;
+      onMove = false;
+    }
+    if (onMove) {
+      object.setProperty("X", startX[0] + (e.getX() - startX[1]));
+      object.setProperty("Y", startY[0] + (e.getY() - startY[1]));
+    }
+    if (onResize) {
       int w = width, h = height;
-      int dx = startX[0] + (mouseX - startX[1]);
-      int dy = startY[0] + (mouseY - startY[1]);
+      int dx = startX[0] + (e.getX() - startX[1]);
+      int dy = startY[0] + (e.getY() - startY[1]);
       println("startX[0]: " + startX[0]);
       println("startY[0]: " + startY[0]);
       println("dx: " + (dx - startX[0]));
@@ -72,42 +120,6 @@ public class ObjectEditor extends GUIObject {
       object.setProperty("Width", w);
       object.setProperty("Height", h);
     } 
-    if (!hideButtons) {
-      btnMove.draw();
-      btnResize.draw();
-    }
-  }
-
-  public boolean mouseEvent(MouseEvent e) {
-    if (mouseManager.mouseEvent(e)) { //<>//
-      if (mouseManager.isHovered()) {
-        hideButtons = false;
-      }
-      return true;
-    } else if (!hideButtons && btnMove.mouseEvent(e)) { 
-      if (e.getAction() == MouseEvent.PRESS && !onMove) {
-        startX[0] = xPos;
-        startX[1] = e.getX();
-        startY[0] = yPos;
-        startY[1] = e.getY();
-        onMove = true;
-      }
-      return true;
-    } else if (!hideButtons && btnResize.mouseEvent(e)) {
-      if (e.getAction() == MouseEvent.PRESS && !onResize) {
-        startX[0] = width;
-        startX[1] = e.getX();
-        startY[0] = height;
-        startY[1] = e.getY();
-        onResize = true;
-      }
-      return true;
-    } else if (e.getAction() == MouseEvent.PRESS) {
-      hideButtons = true;
-    } else if (e.getAction() == MouseEvent.RELEASE) {
-      onResize = false;
-      onMove = false;
-    }
     shift = e.isShiftDown();
     control = e.isControlDown();
     return false;
