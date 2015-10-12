@@ -17,7 +17,7 @@ public class Checkbox extends GUIObject implements PConstants {
   private String name;
   private int col, bgCol, disCol;
   private int textSize, style;
-  private boolean hovered, pressed, checked, disabled;
+  private boolean hovered, pressed, checked, disabled, clicked;
   
   public Checkbox(PApplet p, String n, int x, int y, boolean c) {
     super(p, x, y, 30, 30);
@@ -216,9 +216,19 @@ public class Checkbox extends GUIObject implements PConstants {
       mouseOver(x, y);
       if (hovered) {
         checked = !checked;
+        clicked = true;
       }
     }
     pressed = false;
+  }
+  
+  public boolean wasClicked() {
+    if (clicked) {
+      clicked = false;
+      return true;
+    } else {
+      return false;
+    } // end of if-else
   }
   
   public boolean isChecked() {

@@ -21,6 +21,7 @@ public class TabContainer extends GUIContainer implements PConstants {
     super(p, x, y, w, h);
     menuHeight = hM;
     tabNames = new ArrayList<String>();
+    addProperty("Selected Tab", selectedTab);
     addProperty("Menu Height", menuHeight);
     addProperty("Tab Width", tabWidth);
     addProperty("Min Tab Widht", minTabWidth);
@@ -31,12 +32,13 @@ public class TabContainer extends GUIContainer implements PConstants {
   
   protected Object getCurrentPropertyValue(String tag, int number) {
     switch (number) {
-      case 9 : return menuHeight;
-      case 10 : return tabWidth;
-      case 11 : return minTabWidth;
-      case 12 : return col;
-      case 13 : return bgCol;
-      case 14 : return mCol;
+      case 9: return selectedTab;
+      case 10 : return menuHeight;
+      case 11 : return tabWidth;
+      case 12 : return minTabWidth;
+      case 13 : return col;
+      case 14 : return bgCol;
+      case 15 : return mCol;
       default: return super.getCurrentPropertyValue(tag, number);
     } // end of switch
   }
@@ -44,17 +46,19 @@ public class TabContainer extends GUIContainer implements PConstants {
   protected void updateProperty(String tag, int number, Object value) {
     super.updateProperty(tag, number, value);
     switch (number) {
-      case 9 : menuHeight = (int)value;
+      case 9 :  chooseTab((int)value);
       break;
-      case 10 : tabWidth = (int)value;
+      case 10 : menuHeight = (int)value;
       break;
-      case 11 : minTabWidth = (int)value;
+      case 11 : tabWidth = (int)value;
       break;
-      case 12 : col = (int)value;
+      case 12 : minTabWidth = (int)value;
       break;
-      case 13 : bgCol = (int)value;
+      case 13 : col = (int)value;
       break;
-      case 14 : mCol = (int)value;
+      case 14 : bgCol = (int)value;
+      break;
+      case 15 : mCol = (int)value;
       break;
     } // end of switch
   }
@@ -96,6 +100,10 @@ public class TabContainer extends GUIContainer implements PConstants {
   
   public int getSelectedTab() {
     return selectedTab;
+  }
+  
+  public int getTabCount() {
+    return tabNames.size();
   }
   
   public void chooseTab(int i) {
